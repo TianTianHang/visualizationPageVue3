@@ -1,0 +1,89 @@
+import {defineStore} from 'pinia';
+import {http} from "../http";
+
+
+export const useGraphStore = defineStore('graph', {
+    state:()=>({
+        //option放入后是相同，需要修改
+        figures:<{id:string,data:{time:Date,option:Option,figure:FigureInfo}[]}[]>[],
+        method:<"get"|"post"|"delete"|"put">'post',
+        //参数设置分离（多张图）
+        params:<{id:string, url:string,param:{
+            timeframe_list: {start:string,end:string,id:string}[],
+            kw_list:string[],
+            title:string}}[]>[]
+    }),
+    getters:{
+        option: (state)=> {
+            return (id:string)=>{
+                // @ts-ignore
+                let temp=state.params.find((e)=>e.id===id)
+                return {
+                    method:state.method,
+                    url:temp.url,
+
+                    param: temp.param
+                }
+            }
+        },
+        figure:(state)=>{
+            return (id:string)=>{
+               // @ts-ignore
+                return state.figures.find((e)=>e.id===id).data.at(-1).figure;
+            }
+        },
+       param:(state)=>{
+            return (id:string)=>{
+               // @ts-ignore
+                return state.params.find((e)=>e.id===id).param
+           }
+       },
+
+    },
+    actions:{
+        requestFigure(id:string) {
+            http(this.option(id))
+            .then(
+                res=>{
+                    if(this.figures.some((e)=>e.id===id)){
+                        this.figures.find((e)=>e.id===id).data.
+                        push({time:new Date(),
+                            option:{
+                                method:this.option.method,
+                                param:this.option(id).param
+                            },
+                            figure:res});
+                    }else {
+                        this.figures.push({id:id,data:[{time:new Date(),option: {
+                                    method: this.option.method,
+                                    param: this.option(id).param
+                                },figure:res}]});
+                    }
+            })
+        },
+        deleteFigure(id:string) {
+          this.figures.splice(this.figures.indexOf((e)=>e.id === id),1)
+        },
+        setParam(id:string,param:{
+            timeframe_list: {start:string,end:string,id:string}[],
+            kw_list:string[],
+            title:string}={timeframe_list:[],kw_list:[],title:"test"
+        }){
+            this.params.push({id:id,url:"hotMap",param:param});
+        },
+        deleteParam(id:string) {
+            this.params.splice(this.params.indexOf((e)=>e.id === id),1)
+        },
+    }
+})
+interface Option{
+    method:"get"|"post"|"delete"|"put",
+    url:string,
+    param: {timeframe_list:{start:string,end:string}[],kw_list:string[],title:string}
+}
+interface FigureInfo{
+    data?: [],
+    layout?: {},
+    frames?: []
+    config?:{}
+}
