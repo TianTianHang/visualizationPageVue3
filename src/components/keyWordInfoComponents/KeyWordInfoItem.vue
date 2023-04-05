@@ -18,8 +18,8 @@
 
 <script setup lang="ts">
 import NestedPopover from "./NestedPopover.vue";
-import type {KeyWordMoreInfo} from "../stores/useKeyWordsStore";
-import {keyWordsStore} from "../stores";
+import type {KeyWordMoreInfo} from "../../stores/useKeyWordsStore";
+import {keyWordsStore} from "../../stores";
 import {Minus} from "@element-plus/icons-vue";
 
 const props=defineProps<{

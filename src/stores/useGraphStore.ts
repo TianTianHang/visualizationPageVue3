@@ -1,10 +1,10 @@
+import {cloneDeep}  from 'lodash';
 import {defineStore} from 'pinia';
 import {http} from "../http";
 import {keyWordsStore, messageStore} from "./index";
 
 
 export const useGraphStore = (id)=> {
-    // @ts-ignore
     // @ts-ignore
     return defineStore(id, {
         state: () => ({
@@ -32,11 +32,7 @@ export const useGraphStore = (id)=> {
                     .then(
                         res => {
                             this.figures.push({
-                                time: new Date(), option: {
-                                    method: this.option.method,
-                                    url: this.option.url,
-                                    param: this.option.param
-                                }, figure: res
+                                time: new Date(), option: cloneDeep(this.option), figure: res
                             });
                             messageStore.showMessage('successFetchedData','zh-cn');
                         })

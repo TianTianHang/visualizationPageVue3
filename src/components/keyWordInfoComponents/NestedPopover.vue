@@ -1,7 +1,7 @@
 <template>
     <div v-for="item  in props.items">
     <el-popover
-            placement="right-start"
+            placement="bottom-start"
             :title="item.title"
             :width="200"
             trigger="click"
@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {ArrowRight, Minus} from "@element-plus/icons-vue";
-import {KeyWordMoreInfo} from "../stores/useKeyWordsStore";
+import {KeyWordMoreInfo} from "../../stores/useKeyWordsStore";
 
 const props=defineProps<{
     items:KeyWordMoreInfo[]

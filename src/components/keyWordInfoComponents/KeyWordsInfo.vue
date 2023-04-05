@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import KeyWordInfoItem from "./KeyWordInfoItem.vue";
-import {keyWordsStore} from "../stores"
+import {keyWordsStore} from "../../stores"
 import {onMounted, toRef} from "vue";
 
 const items=toRef(keyWordsStore,"kw_list")

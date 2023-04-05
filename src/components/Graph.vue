@@ -1,10 +1,28 @@
 <template>
-  <el-button :icon="Operation" @click="openDialog=true"></el-button>
-  <VuePlotly :obj="figureInfo" ref="refPlotly"/>
+    <Zoomable v-model:zoomed="zoomed">
+    <el-row >
+        <el-col  :span="1">
+            <el-button :icon="FullScreen" @click="zoomed=!zoomed"></el-button>
+        </el-col>
+        <el-col :push="20" :span="1">
+            <el-button :icon="Operation" @click="openDialog=true"></el-button>
+        </el-col>
+        <el-col :push="21" :span="1">
+            <el-button :icon="Clock" @click="openDrawer=true"></el-button>
+        </el-col>
+    </el-row>
+  <Plotly :data="figureInfo.data"
+          :layout="figureInfo.layout"
+          :frames="figureInfo.frames"
+          :id="id"
+  />
+
+</Zoomable>
+
   <el-button @click="generateGraph">生成</el-button>
 
 
-  <el-dialog v-model="openDialog" :title="staticString.dialogTitle" width="1000px">
+  <el-dialog v-model="openDialog" :title="staticString.dialogTitle" width="800px">
     <el-tabs v-model="activeName">
       <el-tab-pane name="keyWords" :label="staticString.keyWords">
         <KeyWordSelector :id="id"></KeyWordSelector>
@@ -34,15 +52,37 @@
     </template>
   </el-dialog>
 
+  <el-drawer
+    :title="staticString.historyDrawer"
+    v-model="openDrawer"
+    direction="rtl"
+  >
+  <el-descriptions
+          :column="1"
+          v-for="fig in graphStore.figures" :title="fig.time.toLocaleDateString()+' '+fig.time.toLocaleTimeString()">
+      <el-descriptions-item label="keyWord" >
+          <span v-for="kw in fig.option.param.kw_list">{{kw}}&nbsp</span>
+      </el-descriptions-item>
+      <el-descriptions-item label="timeFrame" >
+          <span v-for="tf in fig.option.param.timeframe_list">{{tf.start+" To "+tf.end}}&nbsp</span>
+      </el-descriptions-item>
+      <el-descriptions-item>
+          <el-button :icon="Select" @click="figureInfo=fig.figure"></el-button>
+      </el-descriptions-item>
+  </el-descriptions>
+  </el-drawer>
+
 </template>
 
 <script lang="ts" setup>
-import {VuePlotly} from "vue3-plotly/dist/library.mjs";
+import { v4 } from 'uuid';
+import {Plotly}  from "../../lib/vue3plotly/vue3-plotly.es.js"
 import {onMounted, onUnmounted, ref, toRef} from "vue";
 import {generateGraphStore} from "../stores";
-import {Operation} from "@element-plus/icons-vue";
+import {Operation,Select,Clock,FullScreen} from "@element-plus/icons-vue";
 import KeyWordSelector from "./KeyWordSelector.vue";
 import TimeSelector from "./TimeSelector.vue";
+import Zoomable from "./Zoomable.vue";
 
 const staticString={
   keyWords:"关键词",
@@ -50,18 +90,20 @@ const staticString={
   dialogTitle:"设置",
   quit:"退出",
   submitOption:"应用",
-    type:"类型"
+    type:"类型",
+    historyDrawer:"历史记录"
 }
 
 
 const refPlotly=ref(null);
-const figureInfo=ref(null);
+const figureInfo=ref({});
 const openDialog=ref(false);
+const openDrawer=ref(false);
+const zoomed=ref(false);
 const activeName=ref("keyWords");
-let graphStore
-let type
-let id;
-
+const id="plotly"+v4();
+const graphStore=generateGraphStore(id);
+const type=toRef(graphStore,"url");
 // const subscribe=graphStore.$subscribe((mutation,state)=>{
 //   if (mutation.type==="patch function"){
 //     graphStore.getFigure(id);
@@ -72,9 +114,6 @@ function generateGraph(){
   console.log(figureInfo);
 }
 onMounted(() => {
-  id=refPlotly.value.$data.plotlyId;
-  graphStore=generateGraphStore(id);
-  type=toRef(graphStore,"url");
   graphStore.requestFigure();
 })
 onUnmounted(()=>{
