@@ -1,8 +1,8 @@
 <template>
   <el-row :gutter="4" align="middle">
     <el-col v-for="tf in timeframe_list" :span="6">
-      <el-tag :key="tf.id" closable @close="handleTagClose(tf.id)">
-        {{ tf.start }} To {{ tf.end }}
+      <el-tag :key="`${tf[0]} To ${tf[1]}`" closable @close="handleTagClose(tf)">
+        {{ tf[0]}} To {{ tf[1] }}
       </el-tag>
     </el-col>
   </el-row>
@@ -16,19 +16,26 @@
           start-placeholder="Start date"
           type="daterange"
           value-format="YYYY-MM-DD"
+          unlink-panels
           :disabled-date="(data:Date)=>data>new Date()"
+          :shortcuts="shortcuts"
+          @change="submitTimeFrame"
       />
     </el-col>
     <el-col :offset="6" :span="6">
-      <el-button @click="submitTimeFrame(timeframe)">提交</el-button>
+     <!--这里放一些预选项-->
     </el-col>
   </el-row>
 </template>
 
 <script lang="ts" setup>
+import {configStore} from "../stores";
+const staticString=computed(()=>{
+    return configStore.myLocal.el.TimeSelector;
+})
 
-import {ref, toRef} from "vue";
-import {v4} from 'uuid';
+import {computed, reactive, ref, toRef} from "vue";
+
 import {generateGraphStore, messageStore} from "../stores";
 
 const props=defineProps<{
@@ -37,35 +44,94 @@ const props=defineProps<{
 const graphStore=generateGraphStore(props.id)
 const timeframe_list = toRef(graphStore.params,"timeframe_list")
 const timeframe = ref<string[]>([])
-const submitTimeFrame = (timeframe: Array<string>) => {
-    graphStore.changeTimeFrameList(new TimeFrame('timeframe-' + v4(), timeframe))
-    messageStore.showMessage('timeFrameAddSuccess', 'zh-cn')
+
+
+const shortcuts =computed(()=>( [
+    {
+        text: staticString.value.text[0],
+        value: () => {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24)
+            return [start, end]
+        },
+    },
+    {
+        text: staticString.value.text[1],
+        value: () => {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            return [start, end]
+        },
+    },
+    {
+        text: staticString.value.text[2],
+        value: () => {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            return [start, end]
+        },
+    },
+    {
+        text: staticString.value.text[3],
+        value: () => {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            return [start, end]
+        },
+    },
+    {
+        text: staticString.value.text[4],
+        value: () => {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
+            return [start, end]
+        },
+    },
+    {
+        text: staticString.value.text[5],
+        value: () => {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 365 * 5)
+            return [start, end]
+        },
+    },
+    {
+        text: staticString.value.text[6],
+        value: () => {
+            const end = new Date()
+            const start = new Date()
+            start.setFullYear(2004,0,1)
+            return [start, end]
+        },
+    },
+]))
+const submitTimeFrame = () => {
+    if(! timeframe_list.value.some((e)=>{return e.toString()===timeframe.value.toString()})){
+        graphStore.addTimeFrame(timeframe.value);
+    }else {
+        messageStore.showCusMessage("重复的日期!","warning");
+    }
 }
 
 
 
-const handleTagClose = (id:string) => {
-    graphStore.changeTimeFrameList(undefined,id)
-    console.log(id)
+const handleTagClose = (timeFrame:string[]) => {
+    graphStore.deleteTimeFrame(timeFrame);
 }
 
 
-class TimeFrame {
-  id: string
-  start: string
-  end: string
 
-  constructor(id: string, frame: Array<string>) {
-    this.id = id;
-    this.start = frame[0];
-    this.end = frame[1];
-  }
-}
 </script>
 
 <style scoped>
 
-.el-row {
+el-row {
   margin-bottom: 20px;
 }
 </style>

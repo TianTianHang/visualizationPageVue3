@@ -8,17 +8,17 @@
             v-model:visible="visible"
     >
         <template #reference>
-            <el-button :icon="ArrowRight"></el-button>
+            <el-button :icon="ArrowRight" round size="small"></el-button>
         </template>
         <div>
             {{item.content}}
         </div>
         <el-row>
             <el-col :span="6">
-                <el-button @click="()=>visible=false">close</el-button>
+                <el-button @click="()=>visible=false" round size="small">close</el-button>
             </el-col>
             <el-col :span="6" :push="5">
-                <el-button :icon="Minus" v-if="!item.children" disabled></el-button>
+                <el-button :icon="Minus" v-if="!item.children" disabled round size="small"></el-button>
                 <NestedPopover v-else :items="item.children"/>
             </el-col>
         </el-row>

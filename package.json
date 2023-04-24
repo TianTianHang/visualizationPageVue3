@@ -15,18 +15,20 @@
     "json-editor-vue": "^0.10.5",
     "lodash": "^4.17.21",
     "pinia": "^2.0.33",
-    "plotly.js-dist-min": "^2.20.0",
+    "plotly.js-dist": "^2.20.0",
     "unplugin-icons": "^0.16.0",
     "uuid": "^9.0.0",
     "vue": "^3.2.47",
     "vue-resize-directive": "^1.2.0"
   },
   "devDependencies": {
+    "@types/plotly.js-dist-min": "^2.3.1",
     "@types/uuid": "^9.0.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "patch-package": "^6.5.1",
     "unplugin-auto-import": "^0.15.2",
     "unplugin-vue-components": "^0.24.1",
-    "vite": "^4.1.4"
+    "vite": "^4.1.4",
+    "vite-plugin-require-transform": "^1.0.12"
   }
 }

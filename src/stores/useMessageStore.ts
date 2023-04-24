@@ -1,15 +1,27 @@
-import {defineStore} from 'pinia'
+import {defineStore, getActivePinia} from 'pinia'
 import {ElMessage} from "element-plus";
-import MessageInfo from "./MessageInfo";
+import {configStore} from "./index";
+
 
 export const useMessageStore = defineStore('message', {
     state:()=>({
-            MessageMap:MessageInfo
     }),
+    getters:{
+        MessageMap:(state)=>{
+            if(getActivePinia){
+                return configStore.myLocal.el.message
+            }else {
+                return null;
+            }
+        },
+    },
     actions:{
-        showMessage(id:string,lang:'zh-cn'|'en'='zh-cn'){
+        showMessage(id:string){
             let e=this.MessageMap[id]
-            ElMessage({type:e.type,message:e.message[lang],grouping: true})
+            ElMessage({type:e.type,message:e.message,grouping: true})
+        },
+        showCusMessage(info:string,type:"success" | "warning" | "error" | "info"){
+            ElMessage({type:type,message:info,grouping: true})
         }
     }
 })
