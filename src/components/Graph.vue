@@ -1,8 +1,7 @@
 <template>
-
     <el-row>
         <el-col :span="4">
-            <el-select v-model="traceGroupName" v-if="kw_list.length!=0">
+            <el-select v-model="traceGroupName" v-if="kw_list.length>=1">
                 <el-option
                         v-for="kw in kw_list"
                         :label="kw"
@@ -10,11 +9,11 @@
                 />
             </el-select>
         </el-col>
-        <el-col :push="15" :span="4">
-            <el-button-group>
+        <el-col :push="15" :span="2">
+            <el-space>
                 <SetDialog :id="id"/>
                 <HistoryDrawer :id="id" @update:historyGraph="historyGraph"/>
-            </el-button-group>
+            </el-space>
         </el-col>
     </el-row>
     <el-row justify="center">

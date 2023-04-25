@@ -39,7 +39,7 @@
     </el-tree>
 </div>
     <div id="dialog"></div>
-
+    <div id="rightClickMenu"></div>
 
 </template>
 
@@ -66,7 +66,9 @@ const tree =ref(null)
 
 
 const handelAllPageClick = (event) => {
-    render(null,document.body)
+    document.removeEventListener("click",handelAllPageClick,)
+    document.removeEventListener("contextmenu",handelAllPageClick,)
+    render(null,document.getElementById("rightClickMenu"))
 }
 const handelNodeClick = (event, data, node) => {
     const menu=h(RightClickMenu,{
@@ -87,8 +89,9 @@ const handelNodeClick = (event, data, node) => {
             }
         }
     })
-    render(menu,document.body)
+    setTimeout(()=>render(menu,document.getElementById("rightClickMenu")),10)
     document.addEventListener("click",handelAllPageClick,{once:true})
+    document.addEventListener("contextmenu",handelAllPageClick,{once:true})
 }
 //处理节点的增加
 const nodeChange=(func,node,isf=false,oldData=null)=>{
@@ -130,5 +133,6 @@ const nodeChange=(func,node,isf=false,oldData=null)=>{
     height: 600px;
     display: block;
     overflow-y: scroll;
+    inset: 10px auto auto auto
 }
 </style>

@@ -11,7 +11,7 @@ export const useGraphStore = (id) => {
             figures: <{ time: Date, option: Option, figure: FigureInfo }[]>[],
             method: <"get" | "post" | "delete" | "put">'post',
             url: <string>"hotMap",
-            params: <Params>{timeframe_list: [], kw_list: keyWordsStore.concatedKeyWords, title: ""},
+            params: <Params>{timeframe_list: [], kw_list: [], title: ""},
             ok: <boolean>false
         }),
         getters: {

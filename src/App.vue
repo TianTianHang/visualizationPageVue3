@@ -5,13 +5,13 @@
     <el-container>
 
         <el-header height="50px">
-            <HeaderBar></HeaderBar>
+            <HeaderBar/>
         </el-header>
 
         <el-container>
 
             <el-aside width="240px">
-                <key-words-tree/>
+                <key-words-tree />
             </el-aside>
 
             <el-main style="width: 740px;overflow: visible">
@@ -19,14 +19,15 @@
             </el-main>
 
             <el-aside style="overflow: unset" width="340px">
-                <el-row>
-                    <el-col>
+                <el-space
+                    style="inset: 10px 50px auto auto"
+                    direction="vertical"
+                >
 
-                    </el-col>
-                    <el-col>
+                        <Graph/>
+                        <Graph/>
 
-                    </el-col>
-                </el-row>
+                </el-space>
             </el-aside>
 
         </el-container>

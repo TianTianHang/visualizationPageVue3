@@ -4,16 +4,27 @@
                  body-style="display:flex;flex-direction:column"
                  class="right-click-menu"
         >
-            <el-button-group v-for="(menuItem,index) in props.menuItems">
-                <el-button text @click="handleClick(index)">{{ menuItem }}</el-button>
-            </el-button-group>
+            <el-space
+                direction="vertical"
+                :size="0"
+                :spacer="spacer"
+                :fill="true"
+            >
+                <el-button
+                    v-for="(menuItem,index) in props.menuItems"
+                    text @click="handleClick(index)"
+                >
+                    {{ menuItem }}
+                </el-button>
+            </el-space>
         </el-card>
     </Teleport>
 </template>
 
 <script lang="ts" setup>
 
-import {onMounted, ref} from "vue";
+import {h, onMounted, ref} from "vue";
+import {ElDivider} from "element-plus";
 
 const props = defineProps<{
     menuVisit: boolean,
@@ -24,6 +35,7 @@ const emits = defineEmits<{
     (e: 'RightMenuClick', index: number): void
 }
 >()
+const spacer = h(ElDivider, { direction: 'horizontal' })
 const handleClick = (index) => {
     emits("RightMenuClick", index)
 }
