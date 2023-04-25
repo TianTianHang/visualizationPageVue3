@@ -48,7 +48,5 @@ export default defineConfig({
       }
     }
   },
-  build: {
-    outDir: './root'
-  }
+  base:'/visualizationPageVue3/'
 })
