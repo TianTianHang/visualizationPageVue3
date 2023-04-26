@@ -2,8 +2,6 @@ name: Deploy
 
 on:
   workflow_dispatch:
-    branches:
-      - main
   push:
     branches:
       - main
@@ -12,17 +10,16 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - run: npm install
+    - name: Checkout 🛎️                        # 第一步：获取源码
+      uses: actions/checkout@v3 
+   
+    - name: Install and Build 🔧               # 第二步：下载依赖和构建
+      run: |
+          npm install
+          npm run build
 
-      - name: Build
-        run: npm run build
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/.vitepress/dist
+    - name: Deploy 🚀                         # 第三步：部署
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+          folder: dist                         # 部署的目录
+          branch: gh-pages                     # 部署到哪个分支
