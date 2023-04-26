@@ -1,5 +1,4 @@
-name: Deploy
-
+name: pages-build-deployment
 on:
   workflow_dispatch:
   push:
