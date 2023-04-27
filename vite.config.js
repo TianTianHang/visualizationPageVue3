@@ -40,10 +40,10 @@ export default defineConfig({
     port: 65535 ,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:5000',
+        target: 'http://tiantianhang.pythonanywhere.com',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': '/api'
+          '^/api': '/'
         }
       }
     }
