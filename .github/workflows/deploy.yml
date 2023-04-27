@@ -25,5 +25,5 @@ jobs:
           branch: gh-pages                     # 部署到哪个分支
     - name: Deployment Status
         run:|
-          echo $deployment_status
+            echo $deployment_status
       
