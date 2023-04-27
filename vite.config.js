@@ -40,7 +40,7 @@ export default defineConfig({
     port: 65535 ,
     proxy: {
       '/api': {
-        target: 'http://tiantianhang.pythonanywhere.com',
+        target: 'https://tiantianhang.pythonanywhere.com',
         changeOrigin: true,
         pathRewrite: {
           '^/api': '/'
