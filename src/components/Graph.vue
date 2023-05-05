@@ -1,4 +1,5 @@
 <template>
+    <div>
     <el-row>
         <el-col :span="4">
             <el-select v-model="traceGroupName" v-if="kw_list.length>=1">
@@ -7,9 +8,13 @@
                         :label="kw"
                         :value="kw"
                 />
+                <el-option
+                    label="all"
+                    value="all"
+                />
             </el-select>
         </el-col>
-        <el-col :push="15" :span="2">
+        <el-col :push="17" :span="2">
             <el-space>
                 <SetDialog :id="id"/>
                 <HistoryDrawer :id="id" @update:historyGraph="historyGraph"/>
@@ -17,15 +22,18 @@
         </el-col>
     </el-row>
     <el-row justify="center">
-        <VuePlotly :data="selectedTrace"
+        <el-col>
+        <VuePlotly
+                :data="selectedTrace"
                 :layout="layout"
-                :frames="frames"
                 :id="id"
                 v-if="ok"
-                ref="vuePlotly"/>
+                ref="vuePlotly"
+        />
         <el-empty description="description" v-else>
             <el-button @click="generateGraph">生成</el-button>
         </el-empty>
+        </el-col>
     </el-row>
   <el-row v-if="sliderRange>1 && ok">
       <el-col :span="1">
@@ -42,8 +50,7 @@
       />
       </el-col>
   </el-row>
-
-
+    </div>
 
 
 
@@ -64,7 +71,7 @@ const staticString=computed(()=>{
 //关键字绑定
 const traceGroupName=ref<string>('');
 const selectedTrace=computed(()=>{return frames.value.filter((e)=>{
-    return e.name===`(${traceGroupName.value})-(${sliderTime.value[0]} ${sliderTime.value[1]})`})[0].data});
+    return e.name===`${traceGroupName.value}-${sliderTime.value[0]} ${sliderTime.value[1]}`})[0].data});
 
 const data=ref([]);
 const layout=ref({});
@@ -117,7 +124,6 @@ const showAnimate=(isFirst:boolean,timeout:number)=>{
 //   }
 // })
 function generateGraph(){
-    data.value=graphStore.figureInfo.figure.data;
     layout.value=graphStore.figureInfo.figure.layout;
     frames.value=graphStore.figureInfo.figure.frames;
     kw_list.value=graphStore.figureInfo.option.param.kw_list;
@@ -139,7 +145,6 @@ watch(ok,()=>{
 })
 
 onMounted(() => {
-  graphStore.requestFigure();
 })
 onUnmounted(()=>{
   graphStore.deleteFigure();
