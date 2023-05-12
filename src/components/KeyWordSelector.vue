@@ -41,7 +41,7 @@ const props = defineProps<{
     id: string,
 }>()
 const graphStore = generateGraphStore(props.id)
-const kw_tree=keyWordsStore.kw_tree
+const kw_tree=toRef(keyWordsStore,"kw_tree")
 const kw_list = toRef(graphStore.params, "kw_list");
 const handleTagClose = (tag: string) => {
     graphStore.deleteKeyWordList(tag)
