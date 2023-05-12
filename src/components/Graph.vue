@@ -125,6 +125,7 @@ const marks = computed(() => {
 const showAnimate = (isFirst: boolean, timeout: number) => {
     if (sliderValue.value < sliderRange.value) {
         sliderValue.value += 1;
+        console.log(sliderValue.value)
         nextTick().then(() => {
                 setTimeout(() => showAnimate(false, timeout), timeout)
             }
