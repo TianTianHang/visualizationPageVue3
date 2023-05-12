@@ -13,19 +13,17 @@
                 </el-aside>
                 <el-container>
                     <el-main style="overflow: visible">
-                        <Graph/>
+                        <Graph height="600px"/>
                     </el-main>
 
-                    <el-aside style="overflow: clip;display: flex;justify-content: center"
-                              width="20%">
-                        <el-space
-                                direction="vertical"
-                                style="inset: 20px auto auto auto;"
-                        >
+                    <el-aside width="30%" style=" overflow: visible;">
+                        <div class="graphGroup">
                             <Graph/>
                             <Graph/>
-                        </el-space>
+                        </div>
                     </el-aside>
+
+
                 </el-container>
             </el-container>
 
@@ -36,15 +34,27 @@
 import Graph from "./components/Graph.vue";
 import HeaderBar from "./components/HeaderBar.vue";
 import {configStore} from "./stores";
-import {toRef} from "vue";
+import {ref, toRef} from "vue";
 import KeyWordsTree from "./components/KeyWordsTree.vue";
 
+import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 
 const locale = toRef(configStore, "locale")
-
+const zindex = ref(1);
+const active = () => {
+    zindex.value = 999;
+}
 
 </script>
 
 <style>
+
+.graphGroup{
+
+    inset: 20px auto auto auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
 </style>
