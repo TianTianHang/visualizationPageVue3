@@ -1,29 +1,34 @@
 <template>
-    <div>
-        <el-row>
-            <el-col :span="4">
-                <el-select v-if="kw_list.length>=1" v-model="traceGroupName">
-                    <el-option
-                            v-for="kw in kw_list"
-                            :label="kw"
-                            :value="kw"
-                    />
-                    <el-option v-if="graphStore.url!='hotMap'"
-                               label="all"
-                               value="all"
-                    />
-                </el-select>
-            </el-col>
-            <el-col :push="16" :span="2">
-                <el-space>
-                    <SetDialog :id="id"/>
-                    <HistoryDrawer :id="id" @update:historyGraph="historyGraph"/>
-                </el-space>
-            </el-col>
-        </el-row>
-        <div class="plotlyGraph">
-            <el-row justify="center">
-                <el-col>
+
+        <Vue3DraggableResizable
+                :initH="props.height"
+                :initW="props.width"
+                :draggable="draggable"
+                @resize-end="resizeEndHandle"
+                @dblclick="()=>{draggable=true}"
+                @deactivated="()=>{draggable=false}"
+        >
+            <div>
+                <div class="toolbar" style="display: flex;justify-content: space-between;">
+                        <el-select v-if="kw_list.length>=1" v-model="traceGroupName">
+                            <el-option
+                                v-for="kw in kw_list"
+                                :label="kw"
+                                :value="kw"
+                            />
+                            <el-option v-if="graphStore.url!='hotMap'"
+                                       label="all"
+                                       value="all"
+                            />
+                        </el-select>
+                        <div class="flex-grow" />
+                        <el-space>
+                            <SetDialog :id="id"/>
+                            <HistoryDrawer :id="id" @update:historyGraph="historyGraph"/>
+                        </el-space>
+                </div>
+
+                <div class="plotlyGraph" style="display: flex;justify-content: center;">
                     <VuePlotly
                             v-if="ok"
                             :id="id"
@@ -34,28 +39,24 @@
                     <el-empty v-else description="description">
                         <el-button :icon="RefreshRight" size="large" @click="generateGraph"></el-button>
                     </el-empty>
-
-                </el-col>
-            </el-row>
-            <el-row></el-row>
-            <el-row v-if="sliderRange>1 && ok">
-                <el-col :span="1">
-                    <el-button :icon="CaretRight" circle @click="showAnimate(true,animateTimeout)"></el-button>
-                </el-col>
-                <el-col :push="1" :span="20">
-                    <el-slider v-model="sliderValue"
-                               :format-tooltip="val =>{return `${sliderTime[0]} To ${sliderTime[1]}`}"
-                               :marks="marks"
-                               :max="sliderRange-1"
-                               :min="0"
-                               :show-stops="true"
-                               tooltip-class="sliderTooltip"
-                    />
-                </el-col>
-            </el-row>
-        </div>
-    </div>
-
+                    <el-row v-if="sliderRange>1 && ok" >
+                        <el-col :span="1">
+                            <el-button :icon="CaretRight" circle @click="showAnimate(true,animateTimeout)"></el-button>
+                        </el-col>
+                        <el-col :span="22" :push="1">
+                            <el-slider v-model="sliderValue"
+                                       :format-tooltip="val =>{return `${sliderTime[0]} To ${sliderTime[1]}`}"
+                                       :marks="marks"
+                                       :max="sliderRange-1"
+                                       :min="0"
+                                       :show-stops="true"
+                                       tooltip-class="sliderTooltip"
+                            />
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+        </Vue3DraggableResizable>
 
 </template>
 
@@ -67,32 +68,34 @@ import {configStore, generateGraphStore} from "../stores";
 import {CaretRight, RefreshRight} from "@element-plus/icons-vue";
 import HistoryDrawer from "./HistoryDrawer.vue";
 import SetDialog from "./SetDialog.vue";
+import Vue3DraggableResizable from 'vue3-draggable-resizable'
+import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 
 const staticString = computed(() => {
     return configStore.myLocal.el.Graph;
 })
 const props = withDefaults(defineProps<{
     height?: string
-}>(), {height: '100%'})
+    width?: string
+}>(), {height: '400', width: '200'})
 //关键字绑定
 const traceGroupName = ref<string>('');
 const selectedTrace = computed(() => {
-    let filter_frame=frames.value.filter((e) => {
+    let filter_frame = frames.value.filter((e) => {
         return e.name === `${traceGroupName.value}-${sliderTime.value[0]} ${sliderTime.value[1]}`
     })
-    if(filter_frame.length>0){
+    if (filter_frame.length > 0) {
         return filter_frame[0].data;
-    }else {
+    } else {
         return [];
     }
 });
-
 
 const layout = ref({});
 const frames = ref([]);
 const kw_list = ref([]);
 const timeframe_list = ref<string[][]>([]);
-
+const draggable=ref(false)
 
 const id = "plotly" + v4();
 const vuePlotly = ref(null);
@@ -121,6 +124,13 @@ const marks = computed(() => {
     });
     return t;
 })
+const resizeEndHandle = (x, y, w, h) => {
+    if (vuePlotly.value != null) {
+        vuePlotly.value.onResize()
+    }
+
+}
+
 
 const showAnimate = (isFirst: boolean, timeout: number) => {
     if (sliderValue.value < sliderRange.value) {
@@ -190,10 +200,6 @@ onUnmounted(() => {
 
 .el-slider__bar {
     transition: all v-bind(animateTimeout+ 'ms') ease;
-}
-
-.plotlyGraph {
-    height: v-bind(props ['height']);
 }
 
 
