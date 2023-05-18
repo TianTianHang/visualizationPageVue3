@@ -1,4 +1,5 @@
 <template>
+  <router-link to="/"></router-link>
     <el-config-provider :locale="locale">
         <el-container>
             <el-header height="50px">
@@ -9,11 +10,10 @@
                     <key-words-tree/>
                 </el-aside>
                 <el-container>
-                    <el-main style="overflow: visible">
-                        <DraggableContainer>
-                            <Graph height="600" width="600"/>
-
-                        </DraggableContainer>
+                    <el-main style="overflow: visible" width="85%">
+                      <div id="dgContainer1" style="height: 100%;width: 100%;">
+                        <router-view name="main"></router-view>
+                      </div>
                     </el-main>
                 </el-container>
             </el-container>
@@ -28,24 +28,12 @@ import {configStore} from "./stores";
 import {ref, toRef} from "vue";
 import KeyWordsTree from "./components/KeyWordsTree.vue";
 import {DraggableContainer} from 'vue3-draggable-resizable'
+import {v4} from "uuid";
 
 
 const locale = toRef(configStore, "locale")
-const zindex = ref(1);
-const active = () => {
-    zindex.value = 999;
-}
 
 </script>
 
 <style>
-
-.graphGroup{
-
-    inset: 20px auto auto auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 </style>
