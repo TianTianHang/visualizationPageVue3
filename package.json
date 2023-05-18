@@ -1,6 +1,6 @@
 {
   "name": "vue_test",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -18,8 +18,9 @@
     "unplugin-icons": "^0.16.0",
     "uuid": "^9.0.0",
     "vue": "^3.2.47",
+    "vue-drag-resize": "^2.0.3",
     "vue-resize-directive": "^1.2.0",
-    "vue3-draggable-resizable": "^1.6.5"
+    "vue-router": "^4.2.0"
   },
   "devDependencies": {
     "@types/plotly.js-dist-min": "^2.3.1",

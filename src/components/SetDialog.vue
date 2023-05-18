@@ -48,4 +48,8 @@ const activeName=ref("keyWords");
 const openDialog=ref(false);
 const graphStore=generateGraphStore(props.id);
 const type=toRef(graphStore,"url");
+const setOpenDialog= (e:boolean) => {
+  openDialog.value=e;
+}
+defineExpose({setOpenDialog})
 </script>

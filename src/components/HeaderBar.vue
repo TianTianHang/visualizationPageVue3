@@ -2,28 +2,48 @@
   <el-menu
       mode="horizontal"
       popper-effect="light"
+      :ellipsis="false"
   >
-      <el-menu-item index="0"><h2>{{ staticString.title }}</h2></el-menu-item>
+      <el-menu-item index="0">
+        <h2>{{ staticString.title }}</h2>
+      </el-menu-item>
       <div class="flex-grow" />
       <el-sub-menu index="1">
         <template #title>{{staticString.changeLang.selected}}</template>
           <el-menu-item  v-for="(lang,index) in staticString.changeLang.langs"
                          :index="`1-${index}`"
-                         @click="handleMenuItemClick(index)"
-          >{{ lang }}</el-menu-item>
+                         @click="handleLangeChange(index as number)"
+          >
+            {{ lang }}
+          </el-menu-item>
       </el-sub-menu>
+      <el-menu-item index="2" @click="handleAddGraph()">
+        <div>
+          <el-icon><Plus/></el-icon>
+        </div>
+     </el-menu-item>
   </el-menu>
 </template>
 
 <script setup lang="ts">
 import {configStore} from "../stores";
-import {computed} from "vue";
-
+import {computed, h, render} from "vue";
+import {Plus} from "@element-plus/icons-vue";
+import Graph from "./Graph.vue";
+import {v4} from "uuid";
+import SetDialog from "./SetDialog.vue";
 const staticString=computed(()=>{
     return configStore.myLocal.el.HeaderBar;
 })
-const handleMenuItemClick=(index:number)=>{
+const handleLangeChange=(index:number)=>{
   configStore.changeLanguage(index);
+}
+const handleAddGraph = () => {
+  const id= "plotly"+ v4()
+  const g=h(Graph,{height:400,width:400,id:id});
+  render(g,document.getElementById("dgContainer1").children[0]);
+  g.component.exposed.setDrActive(true);
+  g.component.exposed.setStateOfDialog(true);
 }
 </script>
 

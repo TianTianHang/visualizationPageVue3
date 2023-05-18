@@ -7,7 +7,8 @@
             :props="treeProps"
             accordion
             node-key="id"
-            @node-contextmenu="handelNodeClick"
+            @node-contextmenu="handelNodeContextMenu"
+            @node-click="handelNodeClick"
             :default-expanded-keys="[1]"
             ref="tree"
     >
@@ -53,6 +54,7 @@ import {configStore} from "../stores";
 import {simpleDialog} from "./SimpleDialog.ts";
 import {ElInput} from "element-plus";
 import {KeyWordMoreInfo} from "../stores/useKeyWordsStore";
+import {useRoute, useRouter} from "vue-router";
 
 
 const staticString=computed(()=>{
@@ -63,14 +65,29 @@ const items = toRef(keyWordsStore, "kw_tree")
 const treeProps = {children: 'children', label: 'word'}
 const tree =ref(null)
 
+const router = useRouter()
+const route = useRoute()
+const handelNodeClick = (data, node,event) => {
+  if(data.has_hover){
+    router.push({
+      name:"infoPage",
+      params:{word:`${data.word.pre_words} ${data.word.post_words}`},
+      state:{data:data}
+    }
+    )
+  }
+  console.log(data)
 
-
+}
+// 实现右键菜单
+// 移除监听器并将菜单卸载
 const handelAllPageClick = (event) => {
     document.removeEventListener("click",handelAllPageClick,)
     document.removeEventListener("contextmenu",handelAllPageClick,)
     render(null,document.getElementById("rightClickMenu"))
 }
-const handelNodeClick = (event, data, node) => {
+
+const handelNodeContextMenu= (event, data, node) => {
     const menu=h(RightClickMenu,{
         menuVisit:true,
         mousePosition:{mouseX:event.clientX,mouseY:event.clientY},
