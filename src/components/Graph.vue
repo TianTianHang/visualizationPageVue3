@@ -67,11 +67,11 @@
 
 <script lang="ts" setup>
 import {Plotly as VuePlotly} from "../../lib/vue3plotly/vue3-plotly.es.js"
-import {computed, onMounted, onUnmounted, ref, toRef, watch} from "vue";
+import {computed, onMounted, onUnmounted, reactive, ref, toRef, watch} from "vue";
 import {configStore, generateGraphStore} from "../stores";
 import {RefreshRight, VideoPause, VideoPlay} from "@element-plus/icons-vue";
 import HistoryDrawer from "./HistoryDrawer.vue";
-import VueDragResize,{} from 'vue-drag-resize/src';
+import VueDragResize from 'vue-drag-resize/dist';
 
 
 const staticString = computed(() => {
@@ -129,9 +129,10 @@ const marks = computed(() => {
   return t;
 })
 
-const resizeEndHandle = (x, y, w, h) => {
+
+const resizeEndHandle = (e) => {
   if (vuePlotly.value != null) {
-    vuePlotly.value.onResize()
+   vuePlotly.value.relayout({width:e.width,height:e.height-50})
   }
 }
 
@@ -222,4 +223,5 @@ onUnmounted(() => {
   display: flex;
   flex-direction: row;
 }
+
 </style>

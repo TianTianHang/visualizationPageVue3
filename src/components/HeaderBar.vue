@@ -7,8 +7,11 @@
       <el-menu-item index="0">
         <h2>{{ staticString.title }}</h2>
       </el-menu-item>
+      <el-menu-item index="1">
+        <router-link to="/">{{ staticString.router[0] }}</router-link>
+      </el-menu-item>
       <div class="flex-grow" />
-      <el-sub-menu index="1">
+      <el-sub-menu index="2">
         <template #title>{{staticString.changeLang.selected}}</template>
           <el-menu-item  v-for="(lang,index) in staticString.changeLang.langs"
                          :index="`1-${index}`"
@@ -17,7 +20,7 @@
             {{ lang }}
           </el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="2" @click="handleAddGraph()">
+      <el-menu-item index="3" @click="handleAddGraph()">
         <div>
           <el-icon><Plus/></el-icon>
         </div>

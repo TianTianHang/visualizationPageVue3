@@ -14,6 +14,7 @@ const en={
         },
         HeaderBar:{
             title:'visualization',
+            router:['home'],
             changeLang:{
                 selected:'English',
                 langs:['Chinese','English']

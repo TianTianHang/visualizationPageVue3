@@ -1,5 +1,4 @@
 <template>
-  <router-link to="/"></router-link>
     <el-config-provider :locale="locale">
         <el-container>
             <el-header height="50px">
@@ -11,9 +10,7 @@
                 </el-aside>
                 <el-container>
                     <el-main style="overflow: visible" width="85%">
-                      <div id="dgContainer1" style="height: 100%;width: 100%;">
                         <router-view name="main"></router-view>
-                      </div>
                     </el-main>
                 </el-container>
             </el-container>
