@@ -1,15 +1,46 @@
 <template>
-  <el-space direction="vertical">
-    <h1><slot name="title"></slot></h1>
-    <h3 v-if="title">{{ title }}</h3>
-    <el-image v-if="img" :src="img" ></el-image>
-    <div>
-      <span>{{ content }}</span>
-    </div>
-  </el-space>
+    <el-card body-style="height:600px">
+      <template #header>
+        <h1 v-if="title">{{ title }}</h1>
+      </template>
+
+      <div style="display: flex;height: 100%;width: 100%;">
+        <el-image v-if="img" :src="<string>img" ></el-image>
+        <div class="text-block">
+          <span>{{ content }}</span>
+        </div>
+        <div id="dgContainer1" style="height: 100%;width: 100%;">
+          <Graph :id="id"/>
+        </div>
+      </div>
+
+    </el-card>
 </template>
-<script setup lang="ts">
-const {title,content,img}= window.history.state.data
+<script lang="ts">
+import Graph from "../App.vue";
+import {v4} from "uuid";
+
+export default {
+  components: {Graph},
+  props: {
+    data: {
+      type: String,
+      required: true,
+    }
+  },
+  data(){
+    return{
+      id:"plotly"+ v4()
+    }
+  },
+  setup(props){
+    const {title,img,content}=JSON.parse(props.data)
+    return {
+      title,img,content
+    }
+
+  }
+}
 </script>
 <style scoped>
 

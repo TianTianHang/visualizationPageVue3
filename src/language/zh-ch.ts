@@ -14,6 +14,7 @@ const myzhch={
         },
         HeaderBar:{
             title:'可视化',
+            router:['主要区域'],
             changeLang:{
                 selected:'中文',
                 langs:['中文','英文']

@@ -15,27 +15,6 @@
         <template #default="{ node, data }">
             <span v-if="data.word.post_words">{{ `${data.word.pre_words} ${data.word.post_words}` }}</span>
             <span v-else>{{ data.word.pre_words }}</span>
-            <div style="flex-grow: 1"/>
-            <el-popover
-                    v-if="data.has_hover"
-                    :width="200"
-                    placement="right-start"
-                    trigger="click"
-            >
-                <template #reference>
-                    <el-button size="small" style="padding:5px 5px" text>
-                        <template #icon>
-                            <el-icon style="transform: rotate(90deg)">
-                                <More/>
-                            </el-icon>
-                        </template>
-                    </el-button>
-                </template>
-                <template #default>
-                    <ExtraInfoForm :content="data.content" :img="data.img" :title="data.title"/>
-                </template>
-            </el-popover>
-
         </template>
     </el-tree>
 </div>
@@ -69,15 +48,14 @@ const router = useRouter()
 const route = useRoute()
 const handelNodeClick = (data, node,event) => {
   if(data.has_hover){
+    const str = JSON.stringify(data);
     router.push({
       name:"infoPage",
       params:{word:`${data.word.pre_words} ${data.word.post_words}`},
-      state:{data:data}
+      query:{data:str}
     }
     )
   }
-  console.log(data)
-
 }
 // 实现右键菜单
 // 移除监听器并将菜单卸载
