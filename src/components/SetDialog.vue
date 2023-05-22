@@ -12,7 +12,7 @@
                 <div>
                     <el-select v-model="type">
                         <el-option disabled value="">Please select one</el-option>
-                        <el-option selected="selected" value="hotMap"
+                        <el-option selected="selected" value="heatMap"
                                    :label="staticString.tap.other.typeItem[0]"/>
                         <el-option value="lineChart" :label="staticString.tap.other.typeItem[1]"/>
                     </el-select>

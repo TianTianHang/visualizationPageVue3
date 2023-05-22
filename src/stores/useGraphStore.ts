@@ -10,7 +10,7 @@ export const useGraphStore = (id) => {
         state: () => ({
             figures: <{ time: Date, option: Option, figure: FigureInfo }[]>[],
             method: <"get" | "post" | "delete" | "put">'post',
-            url: <string>"hotMap",
+            url: <string>"heatMap",
             params: <Params>{timeframe_list: [], kw_list: [], title: ""},
             ok: <boolean>false
         }),
@@ -35,7 +35,6 @@ export const useGraphStore = (id) => {
                             if (res instanceof Error) {
                                 this.ok = false;
                             } else {
-
                                 this.figures.push({
                                     time: new Date(), option: cloneDeep(this.option), figure: res
                                 });
@@ -91,7 +90,7 @@ export const useGraphStore = (id) => {
 interface Option {
     method: "get" | "post" | "delete" | "put",
     url: string,
-    param: { timeframe_list: { start: string, end: string }[], kw_list: string[], title: string }
+    param: Params
 }
 
 interface FigureInfo {
