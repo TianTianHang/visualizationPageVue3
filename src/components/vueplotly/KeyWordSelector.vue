@@ -35,7 +35,7 @@
 
 <script lang="ts" setup>
 import {onMounted, toRef} from "vue";
-import {generateGraphStore, keyWordsStore} from "../stores";
+import {generateGraphStore, keyWordsStore} from "../../stores";
 
 const props = defineProps<{
     id: string,

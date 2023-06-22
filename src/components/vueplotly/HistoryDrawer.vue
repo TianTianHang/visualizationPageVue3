@@ -5,6 +5,7 @@
             :title="staticString.title"
             v-model="openDrawer"
             direction="rtl"
+            append-to-body
     >
         <el-descriptions
                 :column="1"
@@ -24,7 +25,7 @@
 </template>
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {configStore, generateGraphStore} from "../stores";
+import {configStore, generateGraphStore} from "../../stores";
 import {Clock, Select} from "@element-plus/icons-vue";
 const staticString=computed(()=>{
     return configStore.myLocal.el.HistoryDrawer;

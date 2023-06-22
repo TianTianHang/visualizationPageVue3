@@ -1,37 +1,31 @@
 <template>
-
-  <vue-drag-resize
-      :is-draggable="draggable"
-      :is-active="drActive"
-      :h="props.height"
-      :w="props.width"
-      :minh="300"
-      :minw="400"
-      :parentLimitation="true"
-      @dblclick="()=>{draggable=true}"
-      @deactivated="()=>{draggable=false}"
-      @resizestop="resizeEndHandle"
+  <div :style="{position: 'absolute',
+                transform: `translate3d(${left}px, ${top}px, 0)`}"
+                class="graph-context"
+                :ref="dragPreview"
   >
-    <div>
-      <div class="toolbar">
-        <el-select v-if="kw_list.length>=1" v-model="traceGroupName">
-          <el-option
-              v-for="kw in kw_list"
-              :label="kw"
-              :value="kw"
-          />
-          <el-option v-if="graphStore.url!='hotMap'"
-                     label="all"
-                     value="all"
-          />
-        </el-select>
-        <div class="flex-grow"/>
-        <el-space>
-          <SetDialog :id="id" ref="setDialog"/>
-          <HistoryDrawer :id="id" @update:historyGraph="historyGraph" ref="historyDrawer"/>
-        </el-space>
-      </div>
+    <el-card >
+      <template #header>
+        <div class="toolbar" :ref="dragSource" >
+          <el-select v-if="kw_list.length>=1" v-model="traceGroupName">
+            <el-option
+                v-for="kw in kw_list"
+                :label="kw"
+                :value="kw"
+            />
+          </el-select>
+          <div class="flex-grow"/>
+          <el-space>
+            <SettingDialog :id="id" ref="setDialog"/>
+            <HistoryDrawer :id="id" ref="historyDrawer" @update:historyGraph="historyGraph"/>
+          </el-space>
+        </div>
+      </template>
 
+    <template #default>
+      <div :style="{resize: 'both',
+                    overflow: 'hidden'}"
+           v-resize:debounce.100="onResize">
       <div v-if="graphStore.ok" class="PlotlyGraph">
         <VuePlotly
             :id="id"
@@ -40,7 +34,6 @@
             :layout="layout"
         />
         <div v-if="sliderRange>1" class="PlaySlider">
-
           <el-space>
             <el-button :icon="VideoPlay" circle @click="playChange(true,animateTimeout)"></el-button>
             <el-button :icon="VideoPause" circle @click="playChange(false,animateTimeout)"></el-button>
@@ -53,25 +46,26 @@
                      :show-stops="true"
                      tooltip-class="sliderTooltip"
           />
-
-
         </div>
       </div>
       <el-empty v-else description="description">
         <el-button :icon="RefreshRight" size="large" @click="generateGraph"></el-button>
       </el-empty>
-    </div>
-  </vue-drag-resize>
-
+      </div>
+    </template>
+    </el-card>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import {Plotly as VuePlotly} from "../../lib/vue3plotly/vue3-plotly.es.js"
-import {computed, onMounted, onUnmounted, reactive, ref, toRef, watch} from "vue";
-import {configStore, generateGraphStore} from "../stores";
+import {Plotly as VuePlotly} from "../../../lib/vue3plotly/vue3-plotly.es.js"
+import {computed, h, onMounted, onUnmounted, ref, toRef, toRefs, watch, watchEffect,} from "vue";
+import {configStore, generateGraphStore} from "../../stores";
 import {RefreshRight, VideoPause, VideoPlay} from "@element-plus/icons-vue";
 import HistoryDrawer from "./HistoryDrawer.vue";
-import VueDragResize from 'vue-drag-resize/src';
+import SettingDialog from "./SettingDialog.vue";
+import { useDrag } from 'vue3-dnd'
+import {  resizeDirective as vResize } from 'v-resize-observer'
 
 
 const staticString = computed(() => {
@@ -80,12 +74,39 @@ const staticString = computed(() => {
 const props = withDefaults(defineProps<{
   height?: number,
   width?: number,
-  layout?,
-  frames?,
-  id:string
-}>(), {height: 350, width: 400, layout: {}, frames: []})
+  id: string,
+  left?: number
+  top?: number
+}>(), {})
+
+const layout = ref();
+const frames = ref([]);
+const graphStore = generateGraphStore(props.id);
+
+const left = toRef(graphStore?.viewState.position,"left");
+const top = toRef(graphStore?.viewState.position,"top");
+const width = toRef(graphStore?.viewState.size,"width");
+const height = toRef(graphStore?.viewState.size,"height");
+const onResize=(size, target)=> {
+  // const {width,height}=vuePlotly.value.innerLayout
+  // const deltaSize={width:size.width-width,height:size.height-height}
+  const newSize={width:size.width,height:size.height-32}
+  Object.assign(graphStore?.viewState.size, newSize)
+  vuePlotly.value?.relayout(newSize)
+}
+
+// 定义拖拽元素
+const [collectedProps, dragSource, dragPreview] = useDrag({
+  type: 'BOX',
+  item: { id: props.id },
+  collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+})
+
 //关键字绑定
-const traceGroupName = ref<string>('');
+const traceGroupName = ref(graphStore?.viewState.traceGroupName);
+
+
+
 const selectedTrace = computed(() => {
   let filter_frame = frames.value.filter((e) => {
     return e.name === `${traceGroupName.value}-${sliderTime.value[0]} ${sliderTime.value[1]}`
@@ -96,17 +117,30 @@ const selectedTrace = computed(() => {
     return [];
   }
 });
-const layout = ref(props.layout)
-const frames = ref(props.frames)
-const kw_list = ref([]);
+
+const kw_list = computed(() => {
+  const groupsSet = new Set<string>();
+  if (frames.value.length != 0) {
+    frames.value.forEach(obj => {
+      groupsSet.add(obj.group);
+    });
+    return Array.from(groupsSet).sort();
+  } else {
+    return [];
+  }
+});
+
 const timeframe_list = ref<string[][]>([]);
-const draggable = ref(false)
-const drActive = ref(false)
+
+
 
 const vuePlotly = ref(null);
-const graphStore = generateGraphStore(props.id);
+
 //滑块绑定值
-const sliderValue = ref(0);
+const sliderValue = toRef(graphStore?.viewState,"sliderValue");
+
+
+
 const sliderTime = computed(() => {
   return timeframe_list.value[sliderValue.value]
 })
@@ -130,11 +164,7 @@ const marks = computed(() => {
 })
 
 
-const resizeEndHandle = (e) => {
-  if (vuePlotly.value != null) {
-   vuePlotly.value.relayout({width:e.width,height:e.height-50})
-  }
-}
+
 
 const playChange = (val, timeout) => {
   if (val) {
@@ -155,7 +185,6 @@ const playChange = (val, timeout) => {
 function generateGraph() {
   layout.value = graphStore.figureInfo.figure.layout;
   frames.value = graphStore.figureInfo.figure.frames;
-  kw_list.value = graphStore.figureInfo.option.param.kw_list;
   timeframe_list.value = graphStore.figureInfo.option.param.timeframe_list;
   traceGroupName.value = kw_list.value[0]
 }
@@ -163,30 +192,28 @@ function generateGraph() {
 function historyGraph(fig) {
   layout.value = fig.figure.layout;
   frames.value = fig.figure.frames;
-  kw_list.value = fig.option.param.kw_list;
   timeframe_list.value = fig.option.param.timeframe_list;
   graphStore.setOk(true);
 }
 
-const subscribe =graphStore.$subscribe((mutation, state)=>{
-  if(state.ok){
+const subscribe = graphStore.$subscribe((mutation, state) => {
+  if (state.ok) {
     generateGraph();
   }
 })
 
-const setDialog=ref(null);
-const setStateOfDialog = (e:boolean) => {
+const setDialog = ref(null);
+const setStateOfDialog = (e: boolean) => {
   setDialog.value.setOpenDialog(e)
 }
-const setDrActive = (e:boolean) => {
-  drActive.value=e
-}
-defineExpose({setStateOfDialog,playChange, setDrActive})
+
+defineExpose({setStateOfDialog, playChange})
 onMounted(() => {
 })
+
 onUnmounted(() => {
-  graphStore.deleteFigure();
   subscribe();
+  graphStore.$reset();
 })
 
 </script>
@@ -217,11 +244,16 @@ onUnmounted(() => {
 .toolbar {
   display: flex;
   justify-content: space-between;
+  cursor: move;
+  height: 35px;
 }
 
 .PlaySlider {
   display: flex;
   flex-direction: row;
 }
-
+.graph-context{
+  display: flex;
+  flex-direction: column;
+}
 </style>

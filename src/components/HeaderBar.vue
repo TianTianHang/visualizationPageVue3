@@ -32,9 +32,9 @@
 import {configStore} from "../stores";
 import {computed, h, render} from "vue";
 import {Plus} from "@element-plus/icons-vue";
-import Graph from "./Graph.vue";
+import Graph from "./vueplotly/Graph.vue";
 import {v4} from "uuid";
-import SetDialog from "./SetDialog.vue";
+import SetDialog from "./vueplotly/SettingDialog.vue";
 const staticString=computed(()=>{
     return configStore.myLocal.el.HeaderBar;
 })
@@ -44,7 +44,7 @@ const handleLangeChange=(index:number)=>{
 const handleAddGraph = () => {
   const id= "plotly"+ v4()
   const g=h(Graph,{height:400,width:400,id:id});
-  render(g,document.getElementById("dgContainer1").children[0]);
+  render(g,document.getElementById("dgContainer1"));
   g.component.exposed.setDrActive(true);
   g.component.exposed.setStateOfDialog(true);
 }

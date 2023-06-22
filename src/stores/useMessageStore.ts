@@ -16,12 +16,24 @@ export const useMessageStore = defineStore('message', {
         },
     },
     actions:{
-        showMessage(id:string){
-            let e=this.MessageMap[id]
-            ElMessage({type:e.type,message:e.message,grouping: true})
+        showMessage(type, message) {
+            ElMessage({ type, message, grouping: true });
         },
-        showCusMessage(info:string,type:"success" | "warning" | "error" | "info"){
-            ElMessage({type:type,message:info,grouping: true})
+        showMessageById(id:string){
+            let e=this.MessageMap[id]
+            this.showMessage(e.type,e.message);
+        },
+        showSuccessMessage(message) {
+            this.showMessage("success", message);
+        },
+        showWarningMessage(message) {
+            this.showMessage("warning", message);
+        },
+        showErrorMessage(message) {
+            this.showMessage("error", message);
+        },
+        showInfoMessage(message) {
+            this.showMessage("info", message);
         }
     }
 })

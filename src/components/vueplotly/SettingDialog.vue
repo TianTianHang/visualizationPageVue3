@@ -1,6 +1,6 @@
 <template>
     <el-button :icon="Operation" @click="openDialog=true"></el-button>
-    <el-dialog v-model="openDialog" :title="staticString.title" width="800px">
+    <el-dialog v-model="openDialog" :title="staticString.title" width="800px" append-to-body>
         <el-tabs v-model="activeName">
             <el-tab-pane name="keyWords" :label="staticString.tap.keyWords">
                 <KeyWordSelector :id="id"></KeyWordSelector>
@@ -33,7 +33,7 @@
 </template>
 <script setup lang="ts">
 import {computed, ref, toRef} from "vue";
-import {configStore, generateGraphStore} from "../stores";
+import {configStore, generateGraphStore} from "../../stores";
 import {Operation} from "@element-plus/icons-vue";
 import KeyWordSelector from "./KeyWordSelector.vue";
 import TimeSelector from "./TimeSelector.vue";

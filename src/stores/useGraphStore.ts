@@ -9,15 +9,17 @@ export const useGraphStore = (id) => {
     return defineStore(id, {
         state: () => ({
             figures: <{ time: Date, option: Option, figure: FigureInfo }[]>[],
-            method: <"get" | "post" | "delete" | "put">'post',
             url: <string>"heatMap",
             params: <Params>{timeframe_list: [], kw_list: [], title: ""},
-            ok: <boolean>false
+            ok: <boolean>false,
+            viewState:<{traceGroupName:string,sliderValue:number,
+                position:{left:number,top:number},size:{width:number,height:number}}>{traceGroupName:'HeatValue',sliderValue:0,
+                position:{left:0,top:0},size:{width:400,height:400}}
         }),
         getters: {
             option: (state) => {
                 return {
-                    method: state.method,
+                    method: 'post',
                     url: state.url,
                     param: state.params
                 }
@@ -26,7 +28,6 @@ export const useGraphStore = (id) => {
                 // @ts-ignore
                 return state.figures.at(-1)
             },
-
         },
         actions: {
             requestFigure() {
@@ -43,8 +44,8 @@ export const useGraphStore = (id) => {
                         },
                     )
             },
-            deleteFigure() {
-                this.figures.splice(this.figures.indexOf((e) => e.time == this.figure.time), 1)
+            deleteFigure(time:Date) {
+                this.figures.splice(this.figures.indexOf((e) => e.time == time), 1)
             },
             setParam(params: Params = {timeframe_list: [], kw_list: [], title: "test"}) {
                 this.params = params;
@@ -67,7 +68,7 @@ export const useGraphStore = (id) => {
                         }
                     }
                 })
-                messageStore.showMessage('timeFrameAddSuccess')
+                messageStore.showMessageById('timeFrameAddSuccess')
             },
             deleteTimeFrame(timeframe: string[]) {
                 this.params.timeframe_list.splice(this.params.timeframe_list.indexOf((e) => {
@@ -82,6 +83,12 @@ export const useGraphStore = (id) => {
             },
             setOk(isOk: boolean) {
                 this.ok = isOk;
+            },
+            setUrl(url:string){
+                this.url=url;
+            },
+            setTraceGroupName(val:string){
+                this.viewState.traceGroupName=val;
             }
         }
     })

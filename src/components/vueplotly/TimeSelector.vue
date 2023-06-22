@@ -29,14 +29,14 @@
 </template>
 
 <script lang="ts" setup>
-import {configStore} from "../stores";
+import {configStore} from "../../stores";
 const staticString=computed(()=>{
     return configStore.myLocal.el.TimeSelector;
 })
 
 import {computed, reactive, ref, toRef} from "vue";
 
-import {generateGraphStore, messageStore} from "../stores";
+import {generateGraphStore, messageStore} from "../../stores";
 
 const props=defineProps<{
     id:string,
@@ -115,7 +115,7 @@ const submitTimeFrame = () => {
     if(! timeframe_list.value.some((e)=>{return e.toString()===timeframe.value.toString()})){
         graphStore.addTimeFrame(timeframe.value);
     }else {
-        messageStore.showCusMessage("重复的日期!","warning");
+        messageStore.showWarningMessage("重复的日期!");
     }
 }
 

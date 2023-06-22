@@ -15,12 +15,14 @@
     "lodash-es": "^4.17.21",
     "pinia": "^2.0.33",
     "plotly.js-dist": "^2.20.0",
+    "react-dnd-html5-backend": "^16.0.1",
     "unplugin-icons": "^0.16.0",
     "uuid": "^9.0.0",
+    "v-resize-observer": "^2.0.2",
     "vue": "^3.2.47",
-    "vue-drag-resize": "^2.0.3",
     "vue-resize-directive": "^1.2.0",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "vue3-dnd": "^2.0.2"
   },
   "devDependencies": {
     "@types/plotly.js-dist-min": "^2.3.1",

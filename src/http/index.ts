@@ -19,7 +19,7 @@ instance.interceptors.request.use(
     err => {
         // 在请求错误的时候做些什么（此处错误，请求没有到后端）
 
-        messageStore.showMessage('sendRequestError')
+        handleResponseError(err);
         // @ts-ignore
         return Promise.reject(err)//这里返回一个promise对象
     }
@@ -28,12 +28,12 @@ instance.interceptors.response.use(
     res => {
         //请求成功对响应数据进行处理
 
-        messageStore.showMessage('successFetchedData');
+        messageStore.showMessageById('successFetchedData');
         return res
     }, err => {
         //响应错误做些什么（此处错误，到达后端后返回）
 
-        messageStore.showMessage('dataResponseError')
+        handleResponseError(err);
         // @ts-ignore
         return Promise.reject(err)
     }
@@ -68,7 +68,20 @@ async function http(option: { method: string, url: string, param: {} }) {
     }
     return result
 }
+function handleRequestError(error) {
+    messageStore.showMessageById('sendRequestError');
+    console.error(error);
+}
 
+function handleResponseError(error) {
+    messageStore.showMessageById('dataResponseError');
+    console.error(error);
+}
+
+function handleError(error) {
+    handleRequestError(error);
+    handleResponseError(error);
+}
 export {http}
 
 

@@ -33,7 +33,7 @@ export const useKeyWordsStore = defineStore("keyWordsStore", {
         },
         addKeyWord(keyWord:KeyWordMoreInfo) {
             if (this.contain(keyWord)) {
-                messageStore.showMessage("duplicateDataWarning")
+                messageStore.showMessageById("duplicateDataWarning")
             } else {
                 let words=keyWord.word
                 let index=this.kw_tree.indexof((e)=>e.pre_words===words.pre_words)
