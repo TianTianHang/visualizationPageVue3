@@ -38,9 +38,9 @@ import {onMounted, toRef} from "vue";
 import {generateGraphStore, keyWordsStore} from "../../stores";
 
 const props = defineProps<{
-    id: string,
+  plotlyId: string,
 }>()
-const graphStore = generateGraphStore(props.id)
+const graphStore = generateGraphStore(props.plotlyId)
 const kw_tree=toRef(keyWordsStore,"kw_tree")
 const kw_list = toRef(graphStore.params, "kw_list");
 const handleTagClose = (tag: string) => {

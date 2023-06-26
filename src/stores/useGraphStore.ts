@@ -13,8 +13,8 @@ export const useGraphStore = (id) => {
             params: <Params>{timeframe_list: [], kw_list: [], title: ""},
             ok: <boolean>false,
             viewState:<{traceGroupName:string,sliderValue:number,
-                position:{left:number,top:number},size:{width:number,height:number}}>{traceGroupName:'HeatValue',sliderValue:0,
-                position:{left:0,top:0},size:{width:400,height:400}}
+                position:{left:number,top:number},size:{width:number,height:number},animateTimeout:number}>{traceGroupName:'HeatValue',sliderValue:0,
+                position:{left:0,top:0},size:{width:400,height:400}, animateTimeout:500}
         }),
         getters: {
             option: (state) => {
@@ -25,8 +25,12 @@ export const useGraphStore = (id) => {
                 }
             },
             figureInfo: (state) => {
-                // @ts-ignore
-                return state.figures.at(-1)
+                if(state.figures.length!=0){
+                    return state.figures[state.figures.length-1]
+                }else {
+                    return null;
+                }
+
             },
         },
         actions: {

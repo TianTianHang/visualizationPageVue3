@@ -6,7 +6,7 @@ import {pinia} from "../stores/store";
 
 const messageStore = useMessageStore(pinia)
 let instance = axios.create({
-    baseURL: "https://tiantianhang.pythonanywhere.com/api",//服务器地址
+    baseURL: "http://127.0.0.1:5000/api",//服务器地址
     timeout: 250000//默认超时时长
 })
 instance.interceptors.request.use(

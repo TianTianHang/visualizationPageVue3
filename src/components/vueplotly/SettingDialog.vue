@@ -3,10 +3,10 @@
     <el-dialog v-model="openDialog" :title="staticString.title" width="800px" append-to-body>
         <el-tabs v-model="activeName">
             <el-tab-pane name="keyWords" :label="staticString.tap.keyWords">
-                <KeyWordSelector :id="id"></KeyWordSelector>
+                <KeyWordSelector :plotlyId="plotlyId"></KeyWordSelector>
             </el-tab-pane>
             <el-tab-pane name="timeFrame" :label="staticString.tap.timeFrame">
-                <TimeSelector :id="id"></TimeSelector>
+                <TimeSelector :plotlyId="plotlyId"></TimeSelector>
             </el-tab-pane>
             <el-tab-pane name="type" :label="staticString.tap.other.title">
                 <div>
@@ -21,10 +21,10 @@
         </el-tabs>
         <template #footer>
       <span class="dialog-footer">
-        <el-button @click="openDialog = false">
+        <el-button @click="handleQuit">
           {{staticString.foot.quit}}
         </el-button>
-        <el-button type="primary" @click="()=>{graphStore.requestFigure();openDialog=false;}">
+        <el-button type="primary" @click="handleSubmit">
           {{staticString.foot.submit}}
         </el-button>
       </span>
@@ -37,19 +37,37 @@ import {configStore, generateGraphStore} from "../../stores";
 import {Operation} from "@element-plus/icons-vue";
 import KeyWordSelector from "./KeyWordSelector.vue";
 import TimeSelector from "./TimeSelector.vue";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
+
 
 const props=defineProps<{
-    id:string,
+    plotlyId:string,
+    openSetting:boolean
 }>();
+defineEmits(['update:openSetting'])
 const staticString=computed(()=>{
     return configStore.myLocal.el.SetDialog;
 })
 const activeName=ref("keyWords");
-const openDialog=ref(false);
-const graphStore=generateGraphStore(props.id);
+const openDialog=ref(props.openSetting);
+const graphStore=generateGraphStore(props.plotlyId);
 const type=toRef(graphStore,"url");
-const setOpenDialog= (e:boolean) => {
-  openDialog.value=e;
+const handleRouter=()=>{
+  if(router.currentRoute.value.name=="settingDialog"){
+    router.back()
+  }
 }
-defineExpose({setOpenDialog})
+const handleQuit=()=>{
+  openDialog.value = false;
+  handleRouter();
+}
+
+const handleSubmit=()=>{
+  graphStore.requestFigure();
+  openDialog.value=false;
+  handleRouter();
+};
+
 </script>

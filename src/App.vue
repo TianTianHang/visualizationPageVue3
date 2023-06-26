@@ -6,7 +6,8 @@
                 <HeaderBar/>
             </el-header>
           <el-container>
-            <GraphContainerView/>
+            <router-view>
+            </router-view>
           </el-container>
             <el-footer>
             </el-footer>
@@ -18,11 +19,8 @@
 import HeaderBar from "./components/HeaderBar.vue";
 import {configStore} from "./stores";
 import {toRef} from "vue";
-import Index from "./views/GraphContainerView.vue";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import { DndProvider } from 'vue3-dnd'
-import GraphContainerr from "./views/GraphContainerView.vue";
-import GraphContainerView from "./views/GraphContainerView.vue";
 const locale = toRef(configStore, "locale")
 
 </script>

@@ -61,7 +61,11 @@ const myzhch={
             'duplicateDataWarning':{
                 type:'warning',
                 message:'请勿输入重复数据！'
-            }
+            },
+            'noSpaceForItem': {
+                type: 'warning',
+                message: '没有位置了！'
+            },
         },
         KeyWordsTree:{
             simpleDialogTitle:"更改",

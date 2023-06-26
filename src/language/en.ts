@@ -60,7 +60,11 @@ const en={
             'duplicateDataWarning':{
                 type:'warning',
                 message:'Do not enter duplicate data!'
-            }
+            },
+            'noSpaceForItem': {
+                type: 'warning',
+                message: 'no space!'
+            },
         },
         KeyWordsTree:{
             simpleDialogTitle:"change",

@@ -39,9 +39,9 @@ import {computed, reactive, ref, toRef} from "vue";
 import {generateGraphStore, messageStore} from "../../stores";
 
 const props=defineProps<{
-    id:string,
+  plotlyId:string,
 }>()
-const graphStore=generateGraphStore(props.id)
+const graphStore=generateGraphStore(props.plotlyId)
 const timeframe_list = toRef(graphStore.params,"timeframe_list")
 const timeframe = ref<string[]>([])
 

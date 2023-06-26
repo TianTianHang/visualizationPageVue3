@@ -1,13 +1,15 @@
-import Graph from "../components/vueplotly/Graph.vue";
-import {h} from "vue";
-import InfoFragments from "../components/InfoFragments.vue";
-import {v4} from "uuid";
-const gd= h("div",
-    {id:"dgContainer1" ,style:"height: 100%;width: 100%;"},
-    h(Graph,{height:300 ,width:400 ,id:"plotly"+ v4()}))
-
+import GraphContainerView from "../views/GraphContainerView.vue";
+import SettingDialog from "../components/vueplotly/SettingDialog.vue";
 const routes = [
-    { path: '/', components: {main:gd} },
+    { path: '/',component: null},
+    {
+        path: '/containerView', component: GraphContainerView,children: [
+            {
+                path: ':id', name: 'settingDialog', component: SettingDialog,
+                props: route => ({ plotlyId:<string> route.params.id,openSetting:Boolean(route.query.open)})
+            }
+        ]
+    },
 ]
 
 export {routes}

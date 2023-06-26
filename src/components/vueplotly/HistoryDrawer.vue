@@ -31,12 +31,12 @@ const staticString=computed(()=>{
     return configStore.myLocal.el.HistoryDrawer;
 })
 const props=defineProps<{
-    id:string,
+  plotlyId:string,
 }>();
 const emits=defineEmits<{
     (e: 'update:historyGraph', historyGraph:{}): void
 }>()
-const graphStore=generateGraphStore(props.id);
+const graphStore=generateGraphStore(props.plotlyId);
 
 const openDrawer=ref(false);
 function handleClick(fig){
