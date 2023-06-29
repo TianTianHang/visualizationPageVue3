@@ -39,14 +39,21 @@ instance.interceptors.response.use(
     }
 )
 
-
+function catUrl(url:string,param:{}){
+    let result=url;
+    for(let key in param ){
+        const value = param[key];
+        result += `${value}/`;
+    }
+    return result;
+}
 //option={method,url,param}
-async function http(option: { method: string, url: string, param: {} }) {
+async function http(option: { method: string, url: string, param: {},query?:{} }) {
     let result = null;
     if (option.method === 'get' || option.method === 'delete') {
         await instance[option.method](
-            api[option.url],
-            {params: option.param}
+            catUrl(api[option.url],option.param),
+            {params: option.query}
         ).then((response) => {
             result = response.data;
         })

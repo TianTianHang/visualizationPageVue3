@@ -8,6 +8,5 @@ const messageStore=useMessageStore()
 const keyWordsStore =useKeyWordsStore()
 const configStore=useConfigStore();
 const containerViewStore=useContainerViewStore();
-//向后端请求keyWords
-keyWordsStore.requestKeyWords()
+
 export {generateGraphStore,messageStore,keyWordsStore,configStore,containerViewStore}

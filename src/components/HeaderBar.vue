@@ -4,14 +4,14 @@
       popper-effect="light"
       :ellipsis="false"
   >
-      <el-menu-item index="0">
+      <el-menu-item index="title">
         <h2>{{ staticString.title }}</h2>
       </el-menu-item>
-      <el-menu-item index="1">
-        <router-link to="/containerView">{{ staticString.router[0] }}</router-link>
+      <el-menu-item v-for="(value,key) in staticString.router" :index="'button'+key">
+        <router-link :to="value.path">{{ value.text }}</router-link>
       </el-menu-item>
       <div class="flex-grow" />
-      <el-sub-menu index="2">
+      <el-sub-menu index="selecter">
         <template #title>{{staticString.changeLang.selected}}</template>
           <el-menu-item  v-for="(lang,index) in staticString.changeLang.langs"
                          :index="`1-${index}`"
@@ -20,7 +20,7 @@
             {{ lang }}
           </el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="3" @click="handleAddGraph()">
+      <el-menu-item index="add" @click="handleAddGraph()">
         <div>
           <el-icon><Plus/></el-icon>
         </div>
@@ -30,16 +30,15 @@
 
 <script setup lang="ts">
 import {configStore, containerViewStore, messageStore} from "../stores";
-import {computed, h, render} from "vue";
+import {computed, h, inject, render, toRef} from "vue";
 import {Plus} from "@element-plus/icons-vue";
-import Graph from "./vueplotly/Graph.vue";
 import {v4} from "uuid";
-import SetDialog from "./vueplotly/SettingDialog.vue";
-import {router} from "../router";
 import {useRouter} from "vue-router";
+
 const staticString=computed(()=>{
     return configStore.myLocal.el.HeaderBar;
 })
+
 const router = useRouter()
 const handleLangeChange=(index:number)=>{
   configStore.changeLanguage(index);

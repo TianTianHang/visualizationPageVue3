@@ -1,6 +1,6 @@
 <template>
-    <el-button :icon="Operation" @click="openDialog=true"></el-button>
-    <el-dialog v-model="openDialog" :title="staticString.title" width="800px" append-to-body>
+    <el-button :icon="Operation" @click="()=>{openSetting=true}"></el-button>
+    <el-dialog v-model="openSetting" :title="staticString.title" width="800px" append-to-body>
         <el-tabs v-model="activeName">
             <el-tab-pane name="keyWords" :label="staticString.tap.keyWords">
                 <KeyWordSelector :plotlyId="plotlyId"></KeyWordSelector>
@@ -32,7 +32,7 @@
     </el-dialog>
 </template>
 <script setup lang="ts">
-import {computed, ref, toRef} from "vue";
+import {computed, ref, toRef, watch} from "vue";
 import {configStore, generateGraphStore} from "../../stores";
 import {Operation} from "@element-plus/icons-vue";
 import KeyWordSelector from "./KeyWordSelector.vue";
@@ -46,12 +46,19 @@ const props=defineProps<{
     plotlyId:string,
     openSetting:boolean
 }>();
-defineEmits(['update:openSetting'])
+const emit=defineEmits(['update:openSetting'])
+const openSetting=computed({
+  get(){
+    return props.openSetting;
+  },
+  set(newValue){
+    emit('update:openSetting',newValue);
+  }
+})
 const staticString=computed(()=>{
     return configStore.myLocal.el.SetDialog;
 })
 const activeName=ref("keyWords");
-const openDialog=ref(props.openSetting);
 const graphStore=generateGraphStore(props.plotlyId);
 const type=toRef(graphStore,"url");
 const handleRouter=()=>{
@@ -60,13 +67,13 @@ const handleRouter=()=>{
   }
 }
 const handleQuit=()=>{
-  openDialog.value = false;
+  openSetting.value = false;
   handleRouter();
 }
 
 const handleSubmit=()=>{
   graphStore.requestFigure();
-  openDialog.value=false;
+  openSetting.value=false;
   handleRouter();
 };
 

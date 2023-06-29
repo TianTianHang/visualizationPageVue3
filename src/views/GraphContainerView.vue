@@ -1,6 +1,6 @@
 <template>
- <SimpleLayout/>
-  <router-view ></router-view>
+  <SimpleLayout/>
+  <router-view style="visibility: hidden"/>
 </template>
 <script setup lang="ts">
 

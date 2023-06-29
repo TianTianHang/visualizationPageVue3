@@ -19,104 +19,118 @@
     </el-tree>
 </div>
     <div id="dialog"></div>
-    <div id="rightClickMenu"></div>
+  <teleport to="body">
+    <RightClickMenu v-model:menu-visit="menuVisit"
+                    :left="left" :top="top"
+
+    >
+      <SimpleDialog
+          v-for="(menuItem,index) in menuItems"
+          :form-title="menuItem" :form-items="formItems" v-model:form-visit="formVisits[index].value"
+          :form-button-text="buttonText"
+          :index="index" @form-open="onRightMenuClick"
+          @form-close="handleFormClose"
+          :form="form"
+      >
+        {{menuItem}}
+      </SimpleDialog>
+    </RightClickMenu>
+
+  </teleport>
 
 </template>
 
 <script lang="ts" setup>
-import {computed, h, reactive, ref, render, toRef} from "vue";
+import {computed, ComputedRef, h, ref, toRef} from "vue";
 import {keyWordsStore} from "../stores";
-import {More} from "@element-plus/icons-vue";
-import ExtraInfoForm from "./ExtraInfoForm.vue";
 import RightClickMenu from "./RightClickMenu.vue";
 import {configStore} from "../stores";
 import {simpleDialog} from "./SimpleDialog.ts";
+import SimpleDialog from "./SimpleDialog.vue";
 import {ElInput} from "element-plus";
 import {KeyWordMoreInfo} from "../stores/useKeyWordsStore";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 
 
 const staticString=computed(()=>{
     return configStore.myLocal.el.KeyWordsTree;
 })
-
 const items = toRef(keyWordsStore, "kw_tree")
 const treeProps = {children: 'children', label: 'word'}
-const tree =ref(null)
+const tree =toRef(keyWordsStore, "treeRef")
+
 
 const router = useRouter()
-const route = useRoute()
 const handelNodeClick = (data, node,event) => {
   if(data.has_hover){
-    const str = JSON.stringify(data);
     router.push({
-      name:"infoPage",
-      params:{word:`${data.word.pre_words} ${data.word.post_words}`},
-      query:{data:str}
-    }
-    )
+      name:"infoPage", params: { id: data.id}
+    })
   }
 }
+
 // 实现右键菜单
 // 移除监听器并将菜单卸载
-const handelAllPageClick = (event) => {
-    document.removeEventListener("click",handelAllPageClick,)
-    document.removeEventListener("contextmenu",handelAllPageClick,)
-    render(null,document.getElementById("rightClickMenu"))
+const menuVisit=ref(false);
+const menuItems=ref(staticString.value.menuItemLabel);
+
+
+
+const onRightMenuClick=(index)=>{
+    if(index===0){
+      keyWordsStore.handleMethod="insertBefore";
+    }else if(index===1){
+      keyWordsStore.handleMethod="append";
+    }else if(index===2){
+      const oldData=keyWordsStore.currentNode.data;
+      form.value={word:`${oldData.word.pre_words} ${oldData.word.post_words}`,
+                  title:oldData.title,content:oldData.content};
+      keyWordsStore.handleMethod="updateKeyChildren";
+    }else if(index===3){
+      formVisits.value[index].value=false;
+      keyWordsStore.remove();
+    }
+}
+const top=ref(0);
+const left=ref(0);
+const handelNodeContextMenu= (event, data, node) => {
+  // 显示右键菜单
+  menuVisit.value=true;
+  top.value=event.y;
+  left.value=event.x;
+  keyWordsStore.currentNode=node;
 }
 
-const handelNodeContextMenu= (event, data, node) => {
-    const menu=h(RightClickMenu,{
-        menuVisit:true,
-        mousePosition:{mouseX:event.clientX,mouseY:event.clientY},
-        menuItems:staticString.value.menuItemLabel,
-        onRightMenuClick:(index)=>{
-            if(index===0){
-                nodeChange(tree.value.insertAfter,node)
-            }else if(index===1){
-                nodeChange(tree.value.append,node)
-            }else if(index===2){
-                const oldData={word:data.word.pre_words+" "+data.word.post_words,
-                    title:data.title,img:data.img,content:data.content,id:data.id,children:data.children}
-                nodeChange(tree.value.updateKeyChildren,node,true,oldData)
-            }else if(index===3){
-                tree.value.remove(node)
-            }
-        }
-    })
-    setTimeout(()=>render(menu,document.getElementById("rightClickMenu")),10)
-    document.addEventListener("click",handelAllPageClick,{once:true})
-    document.addEventListener("contextmenu",handelAllPageClick,{once:true})
+
+
+// 更改菜单
+const formKeys=["word","title","content"];
+const form=ref({});
+const buttonText:string[]=ref(staticString.value.buttonText);
+const formVisits=computed(()=>{
+  return staticString.value.menuItemLabel.map(
+      (e)=>{return ref(false)})
+})
+const formItems:ComputedRef<{type:object|string,label:string,key:string}[]>=computed(()=>{
+  const val=staticString.value.formItemLabel.map(
+      (e)=>{return {label:e,type:ElInput}})
+  formKeys.forEach((e,index)=>{
+    val[index].key=e;
+  })
+  val[2].type=h(ElInput,{rows:"4" ,type:"textarea"})
+  return val
+})
+
+const handleFormClose=(submit:boolean,data:{})=>{
+  if(submit){
+    console.log(data)
+    keyWordsStore.treeMethod(data)
+  }
+  form.value={}
 }
-//处理节点的增加
-const nodeChange=(func,node,isf=false,oldData=null)=>{
-    let data:KeyWordMoreInfo={word:{pre_words:null,post_words:null},title:null,img:null,content:null,has_hover: false, id: null};
-    const dataKeys=["word","title","content","img"];
-    simpleDialog(staticString.value.simpleDialogTitle,staticString.value.diaLogForm.map((e)=>{return {label:e,type:ElInput}}),oldData).then(
-        (res)=>{
-            Object.keys(res).forEach((value,index)=>{
-                if(index==0){
-                    const words=res[value]!=null?res[value].split(" ",2):[]
-                    data[dataKeys[index]].pre_words=words.length>=1?words[0]:null;
-                    data[dataKeys[index]].post_words=words.length==2?words[1]:null;
-                }else {
-                    data[dataKeys[index]] = res[value]
-                }
-            })
-            if(data.img!=null || data.content!=null){
-                data.has_hover=true;
-            }
-            if(data.id===null){
-                data.id=keyWordsStore.nextId()
-            }
-            if(isf){
-                func(node.key,data)
-            }else {
-                func(data,node.key)
-            }
-        }
-    )
-}
+
+
+
 
 </script>
 

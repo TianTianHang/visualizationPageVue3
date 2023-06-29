@@ -1,49 +1,73 @@
 <template>
-    <Teleport to="body">
-        <el-card v-if="props.menuVisit" :style="`inset: ${props.mousePosition.mouseY}px auto auto ${props.mousePosition.mouseX+100}px;`"
-                 body-style="display:flex;flex-direction:column"
-                 class="right-click-menu"
-        >
-            <el-space
-                direction="vertical"
-                :size="0"
-                :spacer="spacer"
-                :fill="true"
-            >
-                <el-button
-                    v-for="(menuItem,index) in props.menuItems"
-                    text @click="handleClick(index)"
-                >
-                    {{ menuItem }}
-                </el-button>
-            </el-space>
-        </el-card>
-    </Teleport>
+  <el-card v-show="menuVisit"
+           :style="{
+                    position: 'fixed',
+                     zIndex: 2001,
+                    transform: `translate3d(${compute_left}px, ${compute_top}px, 0)`
+                    }"
+           body-style="display:flex;flex-direction:column"
+           class="right-click-menu"
+  >
+    <template #default>
+      <el-space
+          :fill="true"
+          :size="0"
+          :spacer="spacer"
+          direction="vertical"
+      >
+        <slot></slot>
+      </el-space>
+    </template>
+  </el-card>
 </template>
 
 <script lang="ts" setup>
 
-import {h, onMounted, ref} from "vue";
+import {computed, h, onMounted, watch} from "vue";
 import {ElDivider} from "element-plus";
 
 const props = defineProps<{
-    menuVisit: boolean,
-    mousePosition: { mouseX: number, mouseY: number },
-    menuItems: string[]
+  menuVisit: boolean,
+  top:number,
+  left:number
 }>();
 const emits = defineEmits<{
-    (e: 'RightMenuClick', index: number): void
+  (e: 'RightMenuClick', index: number): void,
+  (e: 'update:menuVisit', newValue: boolean)
 }
 >()
-const spacer = h(ElDivider, { direction: 'horizontal' })
+// TODO 右键菜单位置计算，实现菜单整个在屏幕内
+const compute_top=computed(()=>{
+  return props.top
+})
+const compute_left=computed(()=>{
+  return props.left
+})
+const menuVisit = computed({
+  get() {
+    return props.menuVisit;
+  },
+  set(newValue) {
+    emits('update:menuVisit', newValue);
+  }
+})
+const spacer = h(ElDivider, {direction: 'horizontal'})
 const handleClick = (index) => {
-    emits("RightMenuClick", index)
+  emits("RightMenuClick", index)
 }
+const handelAllPageClick = (event) => {
+  document.removeEventListener("click",handelAllPageClick,)
+  document.removeEventListener("contextmenu",handelAllPageClick,)
+  menuVisit.value=false;
+}
+watch(menuVisit,()=>{
+  if(menuVisit.value){
+    document.addEventListener("click",handelAllPageClick,{once:true})
+    document.addEventListener("contextmenu",handelAllPageClick,{once:true})
+  }
+})
 </script>
 
 <style scoped>
-.right-click-menu {
-    z-index: 2001;
-    position: fixed;
-}
+
 </style>

@@ -1,4 +1,6 @@
-const myzhch={
+import {Language} from "./index";
+
+const myzhch:Language={
     name:'zh-ch',
     el:{
         TimeSelector:{
@@ -14,14 +16,13 @@ const myzhch={
         },
         HeaderBar:{
             title:'可视化',
-            router:['主要区域'],
+            router:[{path:'/containerView',text:'主要区域'},{path:'/informationView',text:'单词树'}],
             changeLang:{
                 selected:'中文',
                 langs:['中文','英文']
             },
         },
         Graph:{
-
         },
         SetDialog:{
                 title:"设置",
@@ -68,10 +69,10 @@ const myzhch={
             },
         },
         KeyWordsTree:{
-            simpleDialogTitle:"更改",
             menuItemLabel:["平级添加","子级添加","编辑","删除"],
-            diaLogForm:["单词","标题","内容","图片"]
-        }
+            formItemLabel:["单词","标题","内容"],
+            buttonText:["关闭","提交"]
+        },
     }
 
 }

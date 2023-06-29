@@ -18,7 +18,7 @@
           </el-select>
           <div class="flex-grow"/>
           <el-space>
-            <SettingDialog :plotlyId="plotlyId" ref="setDialog" :open-setting="openSetting"/>
+            <SettingDialog :plotlyId="plotlyId" ref="setDialog" v-model:open-setting="openSetting"/>
             <HistoryDrawer :plotlyId="plotlyId" ref="historyDrawer" @update:historyGraph="historyGraph"/>
           </el-space>
         </div>
@@ -198,7 +198,6 @@ function generateGraph() {
   frames.value = graphStore.figureInfo.figure.frames;
   timeframe_list.value = graphStore.figureInfo.option.param.timeframe_list;
   traceGroupName.value = kw_list.value[0]
-  relayout(graphStore.viewState.size);
 }
 
 function historyGraph(fig) {
@@ -211,6 +210,7 @@ function historyGraph(fig) {
 const subscribe = graphStore.$subscribe((mutation, state) => {
   if (state.ok) {
     generateGraph();
+    relayout(graphStore.viewState.size);
   }
 })
 

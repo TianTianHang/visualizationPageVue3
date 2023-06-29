@@ -1,4 +1,6 @@
-const en={
+import {Language} from "./index"
+// @ts-ignore
+const en:Language={
     name:'en',
     el:{
         TimeSelector:{
@@ -14,7 +16,7 @@ const en={
         },
         HeaderBar:{
             title:'visualization',
-            router:['home'],
+            router:[{path:'/containerView',text:'home'},{path:'/informationView',text:'wordList'}],
             changeLang:{
                 selected:'English',
                 langs:['Chinese','English']
@@ -67,9 +69,9 @@ const en={
             },
         },
         KeyWordsTree:{
-            simpleDialogTitle:"change",
             menuItemLabel:["Peer add","Children add","update","delete"],
-            diaLogForm:["word","title","content","image"]
+            formItemLabel:["word","title","content"],
+            buttonText:["close","submit"]
         }
     }
 

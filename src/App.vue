@@ -6,13 +6,13 @@
                 <HeaderBar/>
             </el-header>
           <el-container>
-            <router-view>
-            </router-view>
+            <router-view/>
           </el-container>
             <el-footer>
             </el-footer>
         </el-container>
     </el-config-provider>
+
   </DndProvider>
 </template>
 <script lang="ts" setup xmlns="http://www.w3.org/1999/html">
