@@ -1,8 +1,5 @@
 import Plotly from "plotly.js-dist-min"
-interface FunctionMap {
-  [functionName: string]: (...args: any[]) => void
-}
-const plotlyFunctions: string[] = [
+const plotlyFunctionList: string[] = [
   "restyle",
   "relayout",
   "update",
@@ -13,12 +10,16 @@ const plotlyFunctions: string[] = [
   "prependTraces",
   "purge"
 ]
+type plotlyFunction = keyof typeof plotlyFunctionList
+type FunctionMap = {
+  [key in keyof plotlyFunction]: (...args: any[]) => void
+}
 
-const methods: FunctionMap = plotlyFunctions.reduce((all: FunctionMap, functionName) => {
+const methods: FunctionMap = plotlyFunctionList.reduce((all: FunctionMap, functionName) => {
   // @ts-ignore
   const func = Plotly[functionName]
   if (typeof func === "function") {
-    all[functionName] = function (...args: any[]) {
+    all[functionName as keyof FunctionMap] = function (...args: any[]) {
       return func(this.$el, ...args)
     }
   }

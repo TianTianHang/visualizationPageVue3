@@ -16,6 +16,7 @@ import "element-plus/theme-chalk/dark/css-vars.css"
 import "vxe-table/lib/style.css"
 import "vxe-table-plugin-element/dist/style.css"
 import "@/styles/index.scss"
+import i18n from "@/locales"
 
 const app = createApp(App)
 
@@ -26,7 +27,7 @@ loadSvg(app)
 /** 加载自定义指令 */
 loadDirectives(app)
 
-app.use(store).use(router)
+app.use(store).use(router).use(i18n)
 router.isReady().then(() => {
   app.mount("#app")
 })

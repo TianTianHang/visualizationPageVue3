@@ -1,47 +1,40 @@
 <template>
-  <div :id="id" v-resize:debounce.100="onResize" />
+  <div ref="rootRef" :id="id" />
 </template>
-<script>
+<script lang="ts">
 import Plotly from "plotly.js-dist-min"
-import events from "./EventAndMethod/events.ts"
-import methods from "./EventAndMethod/methods.ts"
-import { camelize } from "./utils/helper"
-import VueResizeObserver from "vue-resize-observer"
-export default {
+import events from "./events"
+import methods from "./methods"
+import { camelize } from "./helper"
+import { defineComponent, PropType } from "vue"
+
+export default defineComponent({
   name: "Vue3Plotly",
   inheritAttrs: false,
-  directives: {
-    resize: VueResizeObserver
-  },
   props: {
-    data: {
-      type: Array
-    },
-    layout: {
-      type: Object
-    },
-    id: {
-      type: String,
-      required: false,
-      default: null
-    }
+    data: Object as PropType<Plotly.Data[]>,
+    layout: Object as PropType<Partial<Plotly.Layout>>,
+    id: { type: String, required: true }
   },
-  data() {
+  data(): {
+    scheduled: { replot: boolean } | null
+    innerLayout: Partial<Plotly.Layout>
+  } {
     return {
       scheduled: null,
       innerLayout: { ...this.layout }
     }
   },
   computed: {
-    options() {
+    options(): Partial<Plotly.Config> {
       const optionsFromAttrs = Object.keys(this.$attrs).reduce((acc, key) => {
-        acc[camelize(key)] = this.$attrs[key]
+        acc[camelize(key) as keyof Plotly.Config] = this.$attrs[key]
         return acc
-      }, {})
+      }, {} as Partial<Plotly.Config>)
       return {
         responsive: false,
         ...optionsFromAttrs
-      }
+      } as Partial<Plotly.Config>
     }
   },
   watch: {
@@ -66,7 +59,7 @@ export default {
     }
   },
   mounted() {
-    Plotly.newPlot(this.$el, this.data, this.innerLayout, this.options)
+    Plotly.newPlot(this.$el, this.data || [], this.innerLayout, this.options)
     events.forEach((evt) => {
       this.$el.addEventListener(evt.completeName, evt.handler(this))
     })
@@ -80,7 +73,7 @@ export default {
     onResize() {
       Plotly.Plots.resize(this.$el)
     },
-    schedule(context) {
+    schedule(context: { replot: boolean }) {
       const { scheduled } = this
       if (scheduled) {
         scheduled.replot = scheduled.replot || context.replot
@@ -88,9 +81,8 @@ export default {
       }
       this.scheduled = context
       this.$nextTick(() => {
-        const {
-          scheduled: { replot }
-        } = this
+        const { scheduled } = this
+        const { replot } = scheduled as { replot: boolean }
         this.scheduled = null
         if (replot) {
           this.react()
@@ -99,11 +91,11 @@ export default {
         this.relayout(this.$el, this.innerLayout)
       })
     },
-    toImage(options) {
+    toImage(options: Plotly.ToImgopts) {
       const allOptions = Object.assign(this.getPrintOptions(), options)
       return Plotly.toImage(this.$el, allOptions)
     },
-    downloadImage(options) {
+    downloadImage(options: Plotly.DownloadImgopts) {
       const filename = `plot--${new Date().toISOString()}`
       const allOptions = Object.assign(this.getPrintOptions(), { filename }, options)
       return Plotly.downloadImage(this.$el, allOptions)
@@ -117,8 +109,8 @@ export default {
       }
     },
     react() {
-      Plotly.react(this.$el, this.data, this.innerLayout, this.options)
+      Plotly.react(this.$el, this.data || [], this.innerLayout, this.options)
     }
   }
-}
+})
 </script>
