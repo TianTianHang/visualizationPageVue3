@@ -5,6 +5,7 @@ import { ref } from "vue"
 import { useGoogleTrendsStore } from "@/store/modules/google-trends"
 import { GoogleTrendsRequestData } from "@/api/google-trends/types/google-trends"
 import { bingMapApi } from "@/api/bing-map"
+// @ts-ignore
 import geojson from "@/views/google-trends/assets/ne_10m_admin_0_countries.json"
 import { unpack } from "@/utils/records"
 

@@ -2,8 +2,11 @@
 import { reactive, ref, watch } from "vue"
 import { CascaderInstance, FormInstance, FormRules } from "element-plus"
 import { DataFrame, GoogleTrendsCategory, GoogleTrendsRequestData } from "@/api/google-trends/types/google-trends"
+// @ts-ignore
 import gprops from "@/views/google-trends/assets/google-trends-gprops.json"
+// @ts-ignore
 import geos from "@/views/google-trends/assets/google-trends-geo.json"
+// @ts-ignore
 import timeframes from "@/views/google-trends/assets/google-trends-timeframe.json"
 import Vue3Plotly from "@/components/Vue3Plotly/index.vue"
 import { Plot, usePlotStore } from "@/store/modules/plot"
