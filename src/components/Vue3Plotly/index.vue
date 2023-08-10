@@ -28,6 +28,7 @@ export default defineComponent({
   computed: {
     options(): Partial<Plotly.Config> {
       const optionsFromAttrs = Object.keys(this.$attrs).reduce((acc, key) => {
+        // @ts-ignore
         acc[camelize(key)] = this.$attrs[key]
         return acc
       }, {} as Partial<Plotly.Config>)
@@ -88,6 +89,7 @@ export default defineComponent({
           this.react()
           return
         }
+        // @ts-ignore
         this.relayout(this.$el, this.innerLayout)
       })
     },

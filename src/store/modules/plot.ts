@@ -82,6 +82,7 @@ export const usePlotStore = defineStore("plot", () => {
             below: "traces",
             sourcetype: "raster",
             sourceattribution: "bing map",
+            // @ts-ignore
             source: bing_map_urls
           }
         ]

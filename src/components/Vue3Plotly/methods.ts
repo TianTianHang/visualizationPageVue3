@@ -21,6 +21,7 @@ type FunctionMap = {
 const methods: FunctionMap = plotlyFunctionList.reduce((all: FunctionMap, functionName) => {
   const func = Plotly[functionName as keyof typeof Plotly]
   all[functionName as keyof FunctionMap] = function (...args: any[]) {
+    //@ts-ignore
     return func(this.$el, ...args)
   }
   return all
