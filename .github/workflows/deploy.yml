@@ -23,14 +23,10 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: "8.6.3"
-          
-      - name: install increase-memory-limit
-        run: pnpm install -g increase-memory-limit
-        
-      - name: increase-memory-limit
-        run: increase-memory-limit  
         
       - name: Build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: pnpm install && pnpm build:prod
 
       - name: Deploy
