@@ -57,32 +57,33 @@ export const constantRoutes: RouteRecordRaw[] = [
     ]
   },
   {
-    path: "/unocss",
+    path: "/trends",
     component: Layouts,
-    redirect: "/unocss/index",
+    redirect: "/trends/explore",
     children: [
       {
-        path: "index",
-        component: () => import("@/views/unocss/index.vue"),
-        name: "UnoCSS",
+        path: "explore",
+        component: () => import("@/views/google-trends/index.vue"),
+        name: "GoogleTrends",
         meta: {
-          title: "unocss",
-          svgIcon: "unocss"
+          title: "GoogleTrends",
+          elIcon: "TrendCharts"
         }
       }
     ]
   },
   {
-    path: "/link",
+    path: "/word-tree",
     component: Layouts,
+    redirect: "/word-tree/index",
     children: [
       {
-        path: "https://juejin.cn/post/7089377403717287972",
-        component: () => {},
-        name: "Link",
+        path: "index",
+        component: () => import("@/views/word-tree/index.vue"),
+        name: "WordTree",
         meta: {
-          title: "外链",
-          svgIcon: "link"
+          title: "WordTree",
+          elIcon: "TrendCharts"
         }
       }
     ]
@@ -112,6 +113,15 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: "VxeTable",
         meta: {
           title: "Vxe Table",
+          keepAlive: true
+        }
+      },
+      {
+        path: "google-trends",
+        component: () => import("@/views/table/google-trends-table/index.vue"),
+        name: "GoogleTrendsTable",
+        meta: {
+          title: "Google Trends",
           keepAlive: true
         }
       }
@@ -187,35 +197,6 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: "Menu2",
         meta: {
           title: "menu2"
-        }
-      }
-    ]
-  },
-  {
-    path: "/hook-demo",
-    component: Layouts,
-    redirect: "/hook-demo/use-fetch-select",
-    name: "HookDemo",
-    meta: {
-      title: "hook 示例",
-      elIcon: "Menu",
-      alwaysShow: true
-    },
-    children: [
-      {
-        path: "use-fetch-select",
-        component: () => import("@/views/hook-demo/use-fetch-select.vue"),
-        name: "UseFetchSelect",
-        meta: {
-          title: "useFetchSelect"
-        }
-      },
-      {
-        path: "use-fullscreen-loading",
-        component: () => import("@/views/hook-demo/use-fullscreen-loading.vue"),
-        name: "UseFullscreenLoading",
-        meta: {
-          title: "useFullscreenLoading"
         }
       }
     ]

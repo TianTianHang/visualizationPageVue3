@@ -95,7 +95,7 @@ const xGridOpt: VxeGridProps = reactive({
     {
       field: "roles",
       title: "角色",
-      /** 自定义列与 type: "html" 的列一起使用，会产生错误，所以采用 TSX 实现 */
+      /** 自定义列与 types: "html" 的列一起使用，会产生错误，所以采用 TSX 实现 */
       slots: RoleColumnSolts
     },
     {

@@ -1,7 +1,7 @@
 /** 统一处理 localStorage */
 
 import CacheKey from "@/constants/cache-key"
-import { type SidebarOpened, type SidebarClosed } from "@/constants/app-key"
+import { type SidebarClosed, type SidebarOpened } from "@/constants/app-key"
 import { type ThemeName } from "@/hooks/useTheme"
 import { type TagView } from "@/store/modules/tags-view"
 import { type LayoutSettings } from "@/config/layouts"
@@ -56,5 +56,13 @@ export const getCachedViews = () => {
 }
 export const setCachedViews = (views: string[]) => {
   localStorage.setItem(CacheKey.CACHED_VIEWS, JSON.stringify(views))
+}
+//#endregion
+//#region 正在应用的主题名称
+export const getCachedLanguage = () => {
+  return localStorage.getItem(CacheKey.CACHED_LANGUAGE)
+}
+export const setCachedLanguage = (local: string) => {
+  localStorage.setItem(CacheKey.CACHED_LANGUAGE, local)
 }
 //#endregion

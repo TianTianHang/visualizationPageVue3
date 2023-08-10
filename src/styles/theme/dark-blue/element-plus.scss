@@ -55,12 +55,12 @@ $text-color: map.merge(
   $text-color
 );
 
-// 生成 --el-color-${type}-light-i
+// 生成 --el-color-${types}-light-i
 @each $type in (primary) {
   @for $i from 1 through 9 {
     @include set-color-mix-level($type, $i, "light", #021633);
   }
-  // --el-color-${type}-dark-2
+  // --el-color-${types}-dark-2
   @include set-color-mix-level($type, 2, "dark", #000);
 }
 

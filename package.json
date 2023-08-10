@@ -1,16 +1,7 @@
 {
-  "name": "v3-admin-vite",
-  "version": "4.1.0",
-  "description": "一个免费开源的中后台管理系统基础解决方案，基于 Vue3、TypeScript、Element Plus、Pinia 和 Vite 等主流技术.",
-  "author": {
-    "name": "pany",
-    "email": "939630029@qq.com",
-    "url": "https://github.com/pany-ang"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/un-pany/v3-admin-vite.git"
-  },
+  "name": "visualization-page-vue3",
+  "version": "0.0.1",
+  "description": "一个基于Google Trends 数据的可视化app",
   "scripts": {
     "dev": "vite",
     "build:stage": "vue-tsc --noEmit && vite build --mode staging",
@@ -35,8 +26,11 @@
     "path-browserify": "1.0.1",
     "path-to-regexp": "6.2.1",
     "pinia": "2.1.4",
+    "plotly.js-dist-min": "^2.25.0",
     "screenfull": "6.0.2",
     "vue": "3.3.4",
+    "vue-i18n": "^9.2.2",
+    "vue-resize-observer": "^2.0.16",
     "vue-router": "4.2.4",
     "vxe-table": "4.4.1",
     "vxe-table-plugin-element": "3.0.7",
@@ -48,6 +42,7 @@
     "@types/node": "20.4.2",
     "@types/nprogress": "0.2.0",
     "@types/path-browserify": "1.0.0",
+    "@types/plotly.js-dist-min": "^2.3.1",
     "@typescript-eslint/eslint-plugin": "6.1.0",
     "@typescript-eslint/parser": "6.1.0",
     "@vitejs/plugin-vue": "4.2.3",
