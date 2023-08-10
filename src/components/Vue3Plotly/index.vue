@@ -28,7 +28,7 @@ export default defineComponent({
   computed: {
     options(): Partial<Plotly.Config> {
       const optionsFromAttrs = Object.keys(this.$attrs).reduce((acc, key) => {
-        acc[camelize(key) as keyof Plotly.Config] = this.$attrs[key]
+        acc[camelize(key)] = this.$attrs[key]
         return acc
       }, {} as Partial<Plotly.Config>)
       return {

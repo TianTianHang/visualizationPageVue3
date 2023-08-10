@@ -1,4 +1,6 @@
 import Plotly from "plotly.js-dist-min"
+import { getCurrentInstance } from "vue"
+getCurrentInstance()
 const plotlyFunctionList: string[] = [
   "restyle",
   "relayout",
@@ -10,19 +12,17 @@ const plotlyFunctionList: string[] = [
   "prependTraces",
   "purge"
 ]
+
 type plotlyFunction = keyof typeof plotlyFunctionList
 type FunctionMap = {
-  [key in keyof plotlyFunction]: (...args: any[]) => void
+  [key in plotlyFunction]: (...args: any[]) => void
 }
 
 const methods: FunctionMap = plotlyFunctionList.reduce((all: FunctionMap, functionName) => {
-  // @ts-ignore
-  const func = Plotly[functionName]
-  if (typeof func === "function") {
-    all[functionName as keyof FunctionMap] = function (...args: any[]) {
-      return func(this.$el, ...args)
-    }
+  const func = Plotly[functionName as keyof typeof Plotly]
+  all[functionName as keyof FunctionMap] = function (...args: any[]) {
+    return func(this.$el, ...args)
   }
   return all
-}, {})
+}, {} as FunctionMap)
 export default methods

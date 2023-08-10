@@ -24,7 +24,7 @@ const { loading, options, value } = useFetchSelect<GetWordData>({
       <span style="float: left">{{ item.word_text }}</span>
       <span style="float: right; color: var(--el-text-color-secondary); font-size: 13px">{{ item.word_category }}</span>
     </el-option>
-    <Post :word_text="value" />
+    <Post :word_text="value as string" />
   </el-select>
 </template>
 
