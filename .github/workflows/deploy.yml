@@ -23,7 +23,10 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: "8.6.3"
-
+          
+      - name: increase-memory-limit
+        run: pnpm install -g increase-memory-limit && increase-memory-limit
+        
       - name: Build
         run: pnpm install && pnpm build:prod
 
